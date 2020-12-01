@@ -34,6 +34,7 @@ namespace BlockCovid
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "BlockCovid", Version = "v1" });
             });
+
             services.AddDbContext<BlockCovidContext>(opts =>
             {
                 opts.UseSqlServer(
@@ -62,8 +63,13 @@ namespace BlockCovid
             {
                 endpoints.MapControllers();
             });
-
+            /*
             SeedData.EnsurePopulated(app);
-        }
+            ,
+  "ConnectionStrings": {
+                "BlockCovidConnection": "Server=tcp:pfe-soufiane-sql.database.windows.net,1433;Initial Catalog=BlockCovid;Persist Security Info=False;User ID=soufiane;Password=azerty1.;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
+  }
+        
+            */}
     }
 }

@@ -1,7 +1,9 @@
+using BlockCovid.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -32,6 +34,12 @@ namespace BlockCovid
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "BlockCovid", Version = "v1" });
             });
+            services.AddDbContext<BlockCovidContext>(opts =>
+            {
+                opts.UseSqlServer(
+                    Configuration["ConnectionStrings:BlockCovidConnection"]);
+            });
+            services.AddScoped<ICitizensRepository, EFCitizensRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -54,6 +62,8 @@ namespace BlockCovid
             {
                 endpoints.MapControllers();
             });
+
+            SeedData.EnsurePopulated(app);
         }
     }
 }

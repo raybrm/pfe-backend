@@ -9,6 +9,5 @@ namespace BlockCovid.Models
     {
         IQueryable<Citizen> Citizens { get; }
         IQueryable<Participant> Participants { get; }
-        //test
     }
 }

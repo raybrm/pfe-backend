@@ -7,7 +7,7 @@ namespace BlockCovid.Models
 {
     public class Citizen
     {
-        //testALex
+        //testSouf
         public long Citizen_ID { get; set; }
         public string First_Name { get; set; }
         public string Last_Name { get; set; }

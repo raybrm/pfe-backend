@@ -49,9 +49,12 @@ namespace BlockCovid
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BlockCovid v1"));
+                //app.UseSwagger();
+                //app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BlockCovid v1"));
+
             }
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BlockCovid v1"));
 
             app.UseHttpsRedirection();
 
@@ -65,11 +68,7 @@ namespace BlockCovid
             });
             /*
             SeedData.EnsurePopulated(app);
-            ,
-  "ConnectionStrings": {
-                "BlockCovidConnection": "Server=tcp:pfe-soufiane-sql.database.windows.net,1433;Initial Catalog=BlockCovid;Persist Security Info=False;User ID=soufiane;Password=azerty1.;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
-  }
-        
-            */}
+            */
+        }
     }
 }

@@ -54,7 +54,10 @@ namespace BlockCovid
 
             }
             app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BlockCovid v1"));
+            app.UseSwaggerUI(c => {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "BlockCovid v1"); // To serve the Swagger UI at the app's root (http://localhost:<port>/)
+                c.RoutePrefix = string.Empty;
+            });
 
             app.UseHttpsRedirection();
 
@@ -66,9 +69,8 @@ namespace BlockCovid
             {
                 endpoints.MapControllers();
             });
-            /*
-            SeedData.EnsurePopulated(app);
-            */
+            
+            SeedData.EnsurePopulated(app); 
         }
     }
 }

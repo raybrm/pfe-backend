@@ -9,6 +9,7 @@ using BlockCovid.Models;
 
 namespace BlockCovid.Controllers
 {
+    [Produces("application/json")] // ce que le controler va renvoyer
     [Route("api/[controller]")]
     [ApiController]
     public class CitizensController : ControllerBase

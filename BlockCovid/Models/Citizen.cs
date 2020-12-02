@@ -15,7 +15,6 @@ namespace BlockCovid.Models
         public long CitizenID { get; set; }
         public string First_Name { get; set; }
         public string Last_Name { get; set; }
-        [Required]
         public bool Is_Positive { get; set; }
 
         public virtual ICollection<CitizenQrCode> Citizen_QrCode { get; set; }

@@ -14,6 +14,7 @@ namespace BlockCovid.Models
 
         public long ParticipantID { get; set; }
         [Required]
+        [EmailAddress]
         public string Login { get; set; }
         [Required]
         public string Password { get; set; }

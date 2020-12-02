@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace BlockCovid.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -23,7 +23,7 @@ namespace BlockCovid.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Participant",
+                name: "Participants",
                 columns: table => new
                 {
                     ParticipantID = table.Column<long>(type: "bigint", nullable: false)
@@ -34,7 +34,7 @@ namespace BlockCovid.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Participant", x => x.ParticipantID);
+                    table.PrimaryKey("PK_Participants", x => x.ParticipantID);
                 });
 
             migrationBuilder.CreateTable(
@@ -51,9 +51,9 @@ namespace BlockCovid.Migrations
                 {
                     table.PrimaryKey("PK_QrCode", x => x.QrCodeID);
                     table.ForeignKey(
-                        name: "FK_QrCode_Participant_ParticipantID",
+                        name: "FK_QrCode_Participants_ParticipantID",
                         column: x => x.ParticipantID,
-                        principalTable: "Participant",
+                        principalTable: "Participants",
                         principalColumn: "ParticipantID",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -113,7 +113,7 @@ namespace BlockCovid.Migrations
                 name: "QrCode");
 
             migrationBuilder.DropTable(
-                name: "Participant");
+                name: "Participants");
         }
     }
 }

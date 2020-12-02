@@ -8,5 +8,6 @@ namespace BlockCovid.Dal
         public BlockCovidContext(DbContextOptions<BlockCovidContext> options) : base (options) { }
 
         public DbSet<Citizen> Citizens { get; set; }
+        public DbSet<Participant> Participants { get; set; }
     }
 }

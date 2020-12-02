@@ -8,8 +8,6 @@ namespace BlockCovid.Interfaces
 {
     public interface ICitizensRepository
     {
-       // IQueryable<Citizen> Citizens { get; }
-
         Task<List<Citizen>> GetCitizensAsync();
         Task<Citizen> GetCitizenByIdAsync(long id);
         Task<Citizen> CreateCitizensAsync(Citizen citizen);

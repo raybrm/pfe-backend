@@ -16,6 +16,7 @@ namespace BlockCovid.Dal
             {
                 context.Database.Migrate();
             }
+            /*
             if (!context.Citizens.Any())
             {
                 context.Citizens.AddRange(
@@ -29,6 +30,7 @@ namespace BlockCovid.Dal
                     });
                 context.SaveChanges();
             }
+            */
         }
     }
 }

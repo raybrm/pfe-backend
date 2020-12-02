@@ -1,6 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using BlockCovid.Models;
+using Microsoft.EntityFrameworkCore;
 
-namespace BlockCovid.Models
+namespace BlockCovid.Dal
 {
     public class BlockCovidContext : DbContext
     {

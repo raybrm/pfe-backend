@@ -2,8 +2,9 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
+using BlockCovid.Models;
 
-namespace BlockCovid.Models
+namespace BlockCovid.Dal
 {
     public static class SeedData
     {

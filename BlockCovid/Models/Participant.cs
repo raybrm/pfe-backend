@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Converters;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 
 namespace BlockCovid.Models
@@ -14,12 +15,8 @@ namespace BlockCovid.Models
         }
 
         public long ParticipantID { get; set; }
-        [Required]
-        [EmailAddress]
         public string Login { get; set; }
-        [Required]
         public string Password { get; set; }
-        [Required]
         public ParticipantType Participant_Type { get; set; }
 
         //Navigation property
@@ -29,7 +26,9 @@ namespace BlockCovid.Models
     
     public enum ParticipantType
     {
+        [EnumMember(Value = "doctor")]
         Doctor,
+        [EnumMember(Value = "establishment")]
         Establishment
     }
 }

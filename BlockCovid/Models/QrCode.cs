@@ -16,7 +16,7 @@ namespace BlockCovid.Models
         public long QrCodeID { get; set; }
         public string Name { get; set; }
         public string Descritpion { get; set; }
-        [Required]
+        // Navigation property
         public virtual Participant Participant { get; set; }
         public virtual ICollection<CitizenQrCode> Citizen_Qr_Code { get; set; }
     }

@@ -31,10 +31,17 @@ namespace BlockCovid
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddControllers().AddJsonOptions(opts =>
+            services.AddControllers().AddJsonOptions(options =>
             {
-                opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); // Pour convertir les enum
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                options.JsonSerializerOptions.IgnoreNullValues = false;
             });
+            /*
+            .AddJsonOptions(opts =>
+             {
+                 opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); // Pour convertir les enum
+             });
+            */
 
             services.AddSwaggerGen(c =>
             {

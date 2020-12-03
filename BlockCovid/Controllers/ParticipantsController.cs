@@ -1,18 +1,19 @@
-﻿using System;
+﻿
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BlockCovid.Dal;
 using BlockCovid.Models;
-using BlockCovid.Dal.Repositories;
 using BlockCovid.Interfaces;
 using BlockCovid.Models.Dto;
-using BlockCovid.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Cors;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using System;
 
 namespace BlockCovid.Controllers
 {
@@ -26,6 +27,7 @@ namespace BlockCovid.Controllers
         private readonly IParticipantsRepository _participant;
         private readonly BlockCovidContext _blockCovid;
         private readonly IMapper _mapper;
+
 
         public ParticipantsController(IParticipantsRepository participant, BlockCovidContext blockCovid, IMapper mapper)
         {
@@ -82,6 +84,43 @@ namespace BlockCovid.Controllers
 
             return CreatedAtAction("GetParticipant", new { id = participant.ParticipantID }, _mapper.Map<ParticipantDto>(participant));
  
+        }
+
+        [HttpGet("login")]
+        public async Task<ActionResult<ParticipantConnexionDto>> Login(String login, String password)
+        {
+
+          
+            var participant = await _blockCovid.Participants.Where(participant => participant.Login == login)
+                .Select(x => _mapper.Map<ParticipantConnexionDto>(x)).
+                FirstOrDefaultAsync();
+
+            if (participant == null)
+            {
+                return BadRequest("Wrong password or mail");
+            }
+            string passwordHash = participant.Password;
+            bool verified = BCrypt.Net.BCrypt.Verify(password, passwordHash);
+
+            if (!verified)
+            {
+                return BadRequest("Wrong password or mail");
+            }
+
+            string SECRET_KEY = "PFE_BACKEND_2020_GRP_13";
+            var SIGNING_KEY = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SECRET_KEY));
+            var signingCredentials = new SigningCredentials(SIGNING_KEY, SecurityAlgorithms.HmacSha256);
+
+
+
+            var tokenJWT = new JwtSecurityToken(
+                issuer: "GROUPE_13",
+                audience: "readers",
+                expires: DateTime.Now.AddHours(1),
+                signingCredentials: signingCredentials
+                );
+
+            return Ok(new JwtSecurityTokenHandler().WriteToken(tokenJWT));
         }
     }
 }

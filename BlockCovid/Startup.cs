@@ -36,12 +36,6 @@ namespace BlockCovid
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 options.JsonSerializerOptions.IgnoreNullValues = false;
             });
-            /*
-            .AddJsonOptions(opts =>
-             {
-                 opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); // Pour convertir les enum
-             });
-            */
 
             services.AddSwaggerGen(c =>
             {

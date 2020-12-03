@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlockCovid.Migrations
 {
     [DbContext(typeof(BlockCovidContext))]
-    [Migration("20201202153932_Initial")]
+    [Migration("20201203094759_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

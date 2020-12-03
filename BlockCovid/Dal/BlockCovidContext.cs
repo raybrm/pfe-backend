@@ -9,5 +9,6 @@ namespace BlockCovid.Dal
 
         public DbSet<Citizen> Citizens { get; set; }
         public DbSet<Participant> Participants { get; set; }
+        public DbSet<BlockCovid.Models.QrCode> QrCode { get; set; }
     }
 }

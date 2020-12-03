@@ -5,16 +5,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using BlockCovid.Models.Dto;
 
 namespace BlockCovid.Dal.Repositories
 {
     public class EFCitizensRepository : ICitizensRepository
     {
         private readonly BlockCovidContext _context;
-
-        public EFCitizensRepository(BlockCovidContext context)
+        private readonly IMapper _mapper;
+        public EFCitizensRepository(BlockCovidContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
 
@@ -48,21 +51,21 @@ namespace BlockCovid.Dal.Repositories
 
         public void ToNotify(long id)
         {
-            System.Diagnostics.Debug.WriteLine("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA2");
-            IQueryable<CitizenQrCode> listCustomer = from CitizenQrCode c in _context.CitizenQrCode
+            
+           
+            IQueryable<CitizenQrCodeDto> listCustomer = from CitizenQrCode c in _context.CitizenQrCode
                                                         where c.CitizenId==1
-                                                        select c ;
-            /*
-            foreach(CitizenQrCode citizenQrCode in listCustomer)
+                                                        select _mapper.Map<CitizenQrCodeDto>(c) ;
+            
+            foreach(CitizenQrCodeDto citizenQrCode in listCustomer)
             {
 
                 System.Diagnostics.Debug.WriteLine(citizenQrCode.Timestamp+" "+citizenQrCode.CitizenQrCodeId);
                 
                 DateTime datePlusUneHeure = citizenQrCode.Timestamp.AddHours(1);
                 DateTime dateMoinsUneHeure = citizenQrCode.Timestamp.AddHours(-1);
-                System.Diagnostics.Debug.WriteLine("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA1");
-                System.Diagnostics.Debug.WriteLine(dateMoinsUneHeure +" "+ citizenQrCode.Timestamp+" " + datePlusUneHeure);
-            }*/
+               
+            }
 
             
         }

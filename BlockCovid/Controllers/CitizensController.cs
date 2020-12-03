@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using BlockCovid.Models;
 using BlockCovid.Interfaces;
 using Microsoft.AspNetCore.Cors;
+using BlockCovid.Models.Dto;
+using AutoMapper;
 
 namespace BlockCovid.Controllers
 {
@@ -18,11 +20,12 @@ namespace BlockCovid.Controllers
     public class CitizensController : ControllerBase
     {
         private readonly ICitizensRepository _citizen;
-
-        public CitizensController(ICitizensRepository citizen)
+        private readonly IMapper _mapper;
+        public CitizensController(ICitizensRepository citizen, IMapper mapper)
         {
             
             _citizen = citizen;
+            _mapper = mapper;
         }
 
         // GET: api/Citizens
@@ -34,9 +37,9 @@ namespace BlockCovid.Controllers
 
         // GET: api/Citizens/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Citizen>> GetCitizen(long id)
+        public async Task<ActionResult<CitizenDto>> GetCitizen(long id)
         {
-             _citizen.ToNotify(id);
+            _citizen.ToNotify(id);
            var citizen = await _citizen.GetCitizenByIdAsync(id);
 
             if (citizen == null)
@@ -44,7 +47,7 @@ namespace BlockCovid.Controllers
                 return NotFound();
             }
 
-            return citizen;
+            return _mapper.Map<CitizenDto>(citizen);
         }
 
         // POST: api/Citizens

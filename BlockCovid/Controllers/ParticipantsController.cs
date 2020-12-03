@@ -12,30 +12,31 @@ using BlockCovid.Interfaces;
 
 namespace BlockCovid.Controllers
 {
+    [Produces("application/json")] // ce que le controler va renvoyer
     [Route("api/[controller]")]
     [ApiController]
     public class ParticipantsController : ControllerBase
     {
-        private readonly BlockCovidContext _context;
+    
         private readonly IParticipantsRepository _participant;
 
-        public ParticipantsController(BlockCovidContext context)
+        public ParticipantsController(IParticipantsRepository participant)
         {
-            _context = context;
+            _participant = participant;
         }
 
         // GET: api/Participants
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Participant>>> GetParticipants()
         {
-            return await _context.Participants.ToListAsync();
+            return await _participant.GetParticipantsAsync();
         }
 
         // GET: api/Participants/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Participant>> GetParticipant(long id)
         {
-            var participant = await _context.Participants.FindAsync(id);
+            var participant = await _participant.GetParticipantByIdAsync(id);
 
             if (participant == null)
             {
@@ -45,52 +46,16 @@ namespace BlockCovid.Controllers
             return participant;
         }
 
-        // PUT: api/Participants/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutParticipant(long id, Participant participant)
-        {
-            if (id != participant.ParticipantID)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(participant).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ParticipantExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
         // POST: api/Participants
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Participant>> PostParticipant(Participant participant)
         {
-            _context.Participants.Add(participant);
-            await _context.SaveChangesAsync();
-            //return Ok();
-            return CreatedAtAction("GetParticipant", new { id = participant.ParticipantID }, participant);
+            var returnParticipant= await _participant.CreateParticipantsAsync(participant);
+          
+            return CreatedAtAction("GetParticipant", new { id = participant.ParticipantID }, returnParticipant);
  
         }
 
-        private bool ParticipantExists(long id)
-        {
-            return _context.Participants.Any(e => e.ParticipantID == id);
-        }
     }
 }

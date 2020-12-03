@@ -31,6 +31,8 @@ namespace BlockCovid.Dal.Repositories
 
         public async Task<Citizen> CreateCitizensAsync(Citizen citizen)
         {
+            System.Diagnostics.Debug.WriteLine("OKOPKPOKPOOPKPOKOPKOPKPOKOKOPKOPOKKLBKHKJHKKJHHKJHKHKJ");
+            System.Diagnostics.Debug.WriteLine(citizen);
             _context.Citizens.Add(citizen);
             await _context.SaveChangesAsync();
             return citizen;

@@ -47,12 +47,16 @@ namespace BlockCovid
                                   });
             });
 
+
+
             services.AddControllers().AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 options.JsonSerializerOptions.IgnoreNullValues = false;
-            });
 
+            });
+               
+          
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "BlockCovid", Version = "v1" });

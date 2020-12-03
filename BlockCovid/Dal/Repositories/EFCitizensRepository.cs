@@ -46,21 +46,25 @@ namespace BlockCovid.Dal.Repositories
 
 
 
-        public async Task<Citizen> ToNotify(long id)
+        public void ToNotify(long id)
         {
-            IQueryable<CitizenQrCode> listCustomer = from CitizenQrCode c in _context.Citizens
-                                                        where c.CitizenId==id
+            System.Diagnostics.Debug.WriteLine("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA2");
+            IQueryable<CitizenQrCode> listCustomer = from CitizenQrCode c in _context.CitizenQrCode
+                                                        where c.CitizenId==1
                                                         select c ;
 
             foreach(CitizenQrCode citizenQrCode in listCustomer)
             {
 
-                System.Diagnostics.Debug.WriteLine(citizenQrCode.Timestamp);
-               
+                System.Diagnostics.Debug.WriteLine(citizenQrCode.Timestamp+" "+citizenQrCode.CitizenQrCodeId);
+                
+                DateTime datePlusUneHeure = citizenQrCode.Timestamp.AddHours(1);
+                DateTime dateMoinsUneHeure = citizenQrCode.Timestamp.AddHours(-1);
+                System.Diagnostics.Debug.WriteLine("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA1");
+                System.Diagnostics.Debug.WriteLine(dateMoinsUneHeure +" "+ citizenQrCode.Timestamp+" " + datePlusUneHeure);
             }
 
-            Citizen citizenQrCod = null;
-            return await Task.FromResult(citizenQrCod);
+            
         }
 
     }

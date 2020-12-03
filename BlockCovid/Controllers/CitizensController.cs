@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Cors;
 
 namespace BlockCovid.Controllers
 {
-    [EnableCors("MyAllowSpecificOrigins")]
+    [EnableCors("_myAllowSpecificOrigins")]
     [Produces("application/json")] // ce que le controler va renvoyer
     [Route("api/[controller]")]
     [ApiController]

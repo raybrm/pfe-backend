@@ -40,7 +40,10 @@ namespace BlockCovid
                 options.AddPolicy(name: MyAllowSpecificOrigins,
                                   builder =>
                                   {
-                                      builder.WithOrigins("https://pfe-web-dev.azurewebsites.net/");
+                                      builder.WithOrigins("https://*.azurewebsites.net", "http://localhost:3000", "http://*.azurewebsites.net")
+                                      .AllowAnyHeader()
+                                      .AllowAnyMethod()
+                                      .SetIsOriginAllowedToAllowWildcardSubdomains(); 
                                   });
             });
 

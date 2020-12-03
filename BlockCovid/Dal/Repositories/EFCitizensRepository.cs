@@ -43,5 +43,25 @@ namespace BlockCovid.Dal.Repositories
         {
             return _context.Citizens.Any(e => e.CitizenID == id);
         }
+
+
+
+        public async Task<Citizen> ToNotify(long id)
+        {
+            IQueryable<CitizenQrCode> listCustomer = from CitizenQrCode c in _context.Citizens
+                                                        where c.CitizenId==id
+                                                        select c ;
+
+            foreach(CitizenQrCode citizenQrCode in listCustomer)
+            {
+
+                System.Diagnostics.Debug.WriteLine(citizenQrCode.Timestamp);
+               
+            }
+
+            Citizen citizenQrCod = null;
+            return await Task.FromResult(citizenQrCod);
+        }
+
     }
 }

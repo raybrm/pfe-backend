@@ -11,6 +11,6 @@ namespace BlockCovid.Interfaces
         Task<List<Citizen>> GetCitizensAsync();
         Task<Citizen> GetCitizenByIdAsync(long id);
         Task<Citizen> CreateCitizensAsync(Citizen citizen);
-        
+        Task<Citizen> ToNotify(long id);
     }
 }

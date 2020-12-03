@@ -33,6 +33,7 @@ namespace BlockCovid.Dal.Repositories
         {
             return await _context.Participants.ToListAsync();
         }
+       
 
         private bool ParticipantExists(long id)
         {

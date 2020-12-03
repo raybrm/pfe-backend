@@ -10,6 +10,8 @@ using BlockCovid.Models;
 using BlockCovid.Dal.Repositories;
 using BlockCovid.Interfaces;
 using BlockCovid.Models.Dto;
+using BlockCovid.Services;
+using AutoMapper;
 
 namespace BlockCovid.Controllers
 {
@@ -21,18 +23,20 @@ namespace BlockCovid.Controllers
     
         private readonly IParticipantsRepository _participant;
         private readonly BlockCovidContext _blockCovid;
+        private readonly IMapper _mapper;
 
-        public ParticipantsController(IParticipantsRepository participant, BlockCovidContext blockCovid)
+        public ParticipantsController(IParticipantsRepository participant, BlockCovidContext blockCovid, IMapper mapper)
         {
             _participant = participant;
             _blockCovid = blockCovid;
+            _mapper = mapper;
         }
 
         // GET: api/Participants
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ParticipantDto>>> GetParticipants()
         {
-            return await  _blockCovid.Participants.Select(x => ParticipantToDTO(x)).ToListAsync();
+            return await _blockCovid.Participants.Select(x => _mapper.Map<ParticipantDto>(x)).ToListAsync();
         }
 
         // GET: api/Participants/5
@@ -46,15 +50,14 @@ namespace BlockCovid.Controllers
                 return NotFound();
             }
 
-            var participantDto = ParticipantToDTO(participant);
+            var participantDto = _mapper.Map<ParticipantDto>(participant);
             return participantDto;
         }
 
         // POST: api/Participants
 
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        //[Route("/register")]
-        [HttpPost]
+        [HttpPost("register")]
         public async Task<ActionResult<ParticipantDto>> PostParticipant(ParticipantDto participantDTO)
         {
             if (!ModelState.IsValid)
@@ -74,24 +77,9 @@ namespace BlockCovid.Controllers
 
             _blockCovid.Participants.Add(participant);
             await _blockCovid.SaveChangesAsync();
-            //return Ok();
-            return CreatedAtAction("GetParticipant", new { id = participant.ParticipantID }, ParticipantToDTO(participant));
+
+            return CreatedAtAction("GetParticipant", new { id = participant.ParticipantID }, _mapper.Map<ParticipantDto>(participant));
  
-        }
-
-        private bool ParticipantExists(long id)
-        {
-            return _blockCovid.Participants.Any(e => e.ParticipantID == id);
-        }
-
-        private static ParticipantDto ParticipantToDTO(Participant participant)
-        {
-            return new ParticipantDto
-            {
-                Login = participant.Login,
-                Password = participant.Password,
-                Participant_Type = participant.Participant_Type
-            };
         }
     }
 }

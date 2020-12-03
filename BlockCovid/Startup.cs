@@ -1,9 +1,9 @@
+using AutoMapper;
 using BlockCovid.Dal;
 using BlockCovid.Dal.Repositories;
 using BlockCovid.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -50,7 +50,7 @@ namespace BlockCovid
             });
             services.AddScoped<ICitizensRepository, EFCitizensRepository>();
             services.AddScoped<IParticipantsRepository, EFParticipantsRepository>();
-            //services.AddAutoMapper(typeof(Startup).Assembly);
+            services.AddAutoMapper(typeof(Startup).Assembly);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

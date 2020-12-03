@@ -10,6 +10,8 @@ using BlockCovid.Models;
 using BlockCovid.Dal.Repositories;
 using BlockCovid.Interfaces;
 using BlockCovid.Models.Dto;
+using BlockCovid.Services;
+using AutoMapper;
 
 namespace BlockCovid.Controllers
 {
@@ -21,9 +23,10 @@ namespace BlockCovid.Controllers
     
         private readonly IParticipantsRepository _participant;
         private readonly BlockCovidContext _blockCovid;
-
-        public ParticipantsController(IParticipantsRepository participant, BlockCovidContext blockCovid)
+        private readonly IMapper _mapper;
+        public ParticipantsController(IParticipantsRepository participant, BlockCovidContext blockCovid,  IMapper mapper)
         {
+            _mapper = mapper;
             _participant = participant;
             _blockCovid = blockCovid;
         }
@@ -33,12 +36,13 @@ namespace BlockCovid.Controllers
         public async Task<ActionResult<IEnumerable<ParticipantDto>>> GetParticipants()
         {
             
+            
             return await  _blockCovid.Participants.Select(x=>ParticipantToDTO(x)).ToListAsync();
         }
 
         // GET: api/Participants/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Participant>> GetParticipant(long id)
+        public async Task<ActionResult<ParticipantDto>> GetParticipant(long id)
         {
             var participant = await _participant.GetParticipantByIdAsync(id);
 
@@ -47,7 +51,10 @@ namespace BlockCovid.Controllers
                 return NotFound();
             }
 
-            return participant;
+            var participantDto = _mapper.Map<ParticipantDto>(participant);
+            //System.Diagnostics.Debug.WriteLine("OKOPKPOKPOOPKPOKOPKOPKPOKOKOPKOPOKKLBKHKJHKKJHHKJHKHKJ");
+            //System.Diagnostics.Debug.WriteLine(participantDto.Login + " " + participantDto.Password + " " + participantDto.Participant_Type + " " + participant.Password);
+            return participantDto;
         }
 
         // POST: api/Participants
@@ -61,6 +68,9 @@ namespace BlockCovid.Controllers
             {
                 return BadRequest(ModelState);
             }
+
+
+
             var participant = new Participant
             {
                 Login = participantDTO.Login,

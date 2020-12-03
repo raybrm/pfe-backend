@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BlockCovid.Models;
 using BlockCovid.Interfaces;
+using Microsoft.AspNetCore.Cors;
 
 namespace BlockCovid.Controllers
 {
+    [EnableCors("MyAllowSpecificOrigins")]
     [Produces("application/json")] // ce que le controler va renvoyer
     [Route("api/[controller]")]
     [ApiController]

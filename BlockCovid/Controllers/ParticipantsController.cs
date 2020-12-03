@@ -79,7 +79,9 @@ namespace BlockCovid.Controllers
         }
 
         // POST: api/Participants
+
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        //[Route("/register")]
         [HttpPost]
         public async Task<ActionResult<ParticipantDto>> PostParticipant(ParticipantDto participantDTO)
         {
@@ -91,7 +93,7 @@ namespace BlockCovid.Controllers
             {
                 Login = participantDTO.Login,
                 Password = participantDTO.Password,
-                Participant_Type = (ParticipantType)participantDTO.Participant_Type
+                Participant_Type = participantDTO.Participant_Type
             };
 
             _context.Participants.Add(participant);

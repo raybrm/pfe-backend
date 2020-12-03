@@ -12,7 +12,7 @@ namespace BlockCovid.Models
         public DateTime Timestamp { get; set; }
         public long QrCodeId { get; set; }
         public long CitizenId { get; set; }
-
+        //Navigation property
         public virtual Citizen Citizen { get; set; }
         public virtual QrCode QrCode { get; set; }
     }

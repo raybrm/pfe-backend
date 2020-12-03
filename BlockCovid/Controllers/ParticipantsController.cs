@@ -13,16 +13,19 @@ using BlockCovid.Models.Dto;
 
 namespace BlockCovid.Controllers
 {
+    [Produces("application/json")] // ce que le controler va renvoyer
     [Route("api/[controller]")]
     [ApiController]
     public class ParticipantsController : ControllerBase
     {
-        private readonly BlockCovidContext _context;
-        //private readonly IParticipantsRepository _participant;
+    
+        private readonly IParticipantsRepository _participant;
+        private readonly BlockCovidContext _blockCovid;
 
-        public ParticipantsController(BlockCovidContext context)
+        public ParticipantsController(IParticipantsRepository participant, BlockCovidContext blockCovid)
         {
-            _context = context;
+            _participant = participant;
+            _blockCovid = blockCovid;
         }
 
         // GET: api/Participants
@@ -30,14 +33,14 @@ namespace BlockCovid.Controllers
         public async Task<ActionResult<IEnumerable<ParticipantDto>>> GetParticipants()
         {
             
-            return await _context.Participants.Select(x=>ParticipantToDTO(x)).ToListAsync();
+            return await  _blockCovid.Participants.Select(x=>ParticipantToDTO(x)).ToListAsync();
         }
 
         // GET: api/Participants/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Participant>> GetParticipant(long id)
         {
-            var participant = await _context.Participants.FindAsync(id);
+            var participant = await _participant.GetParticipantByIdAsync(id);
 
             if (participant == null)
             {
@@ -45,37 +48,6 @@ namespace BlockCovid.Controllers
             }
 
             return participant;
-        }
-
-        // PUT: api/Participants/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutParticipant(long id, Participant participant)
-        {
-            if (id != participant.ParticipantID)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(participant).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ParticipantExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
         }
 
         // POST: api/Participants
@@ -96,8 +68,8 @@ namespace BlockCovid.Controllers
                 Participant_Type = participantDTO.Participant_Type
             };
 
-            _context.Participants.Add(participant);
-            await _context.SaveChangesAsync();
+            _blockCovid.Participants.Add(participant);
+            await _blockCovid.SaveChangesAsync();
             //return Ok();
             return CreatedAtAction("GetParticipant", new { id = participant.ParticipantID }, ParticipantToDTO(participant));
  
@@ -105,7 +77,7 @@ namespace BlockCovid.Controllers
 
         private bool ParticipantExists(long id)
         {
-            return _context.Participants.Any(e => e.ParticipantID == id);
+            return _blockCovid.Participants.Any(e => e.ParticipantID == id);
         }
 
         private static ParticipantDto ParticipantToDTO(Participant participant)

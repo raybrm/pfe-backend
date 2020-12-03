@@ -54,6 +54,7 @@ namespace BlockCovid
                     Configuration["ConnectionStrings:BlockCovidConnection"]);
             });
             services.AddScoped<ICitizensRepository, EFCitizensRepository>();
+            services.AddScoped<IParticipantsRepository, EFParticipantsRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

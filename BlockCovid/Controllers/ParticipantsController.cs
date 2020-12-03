@@ -37,7 +37,7 @@ namespace BlockCovid.Controllers
         {
             
             
-            return await  _blockCovid.Participants.Select(x=>ParticipantToDTO(x)).ToListAsync();
+            return await  _blockCovid.Participants.Select(x => _mapper.Map<ParticipantDto>(x)).ToListAsync();
         }
 
         // GET: api/Participants/5

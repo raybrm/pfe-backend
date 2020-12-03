@@ -12,9 +12,11 @@ using BlockCovid.Interfaces;
 using BlockCovid.Models.Dto;
 using BlockCovid.Services;
 using AutoMapper;
+using Microsoft.AspNetCore.Cors;
 
 namespace BlockCovid.Controllers
 {
+    [EnableCors("_myAllowSpecificOrigins")]
     [Produces("application/json")] // ce que le controler va renvoyer
     [Route("api/[controller]")]
     [ApiController]

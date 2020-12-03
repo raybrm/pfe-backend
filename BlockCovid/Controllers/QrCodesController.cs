@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BlockCovid.Dal;
 using BlockCovid.Models;
+using Microsoft.AspNetCore.Cors;
 
 namespace BlockCovid.Controllers
 {
+    [EnableCors("_myAllowSpecificOrigins")]
     [Route("api/[controller]")]
     [ApiController]
     public class QrCodesController : ControllerBase

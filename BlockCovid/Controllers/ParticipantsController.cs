@@ -53,8 +53,7 @@ namespace BlockCovid.Controllers
         // POST: api/Participants
 
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        //[Route("/register")]
-        [HttpPost]
+        [HttpPost("register")]
         public async Task<ActionResult<ParticipantDto>> PostParticipant(ParticipantDto participantDTO)
         {
             if (!ModelState.IsValid)

@@ -69,12 +69,13 @@ namespace BlockCovid.Controllers
                 return BadRequest(ModelState);
             }
 
+            string passwordHash = BCrypt.Net.BCrypt.HashPassword(participantDTO.Password);
 
 
             var participant = new Participant
             {
                 Login = participantDTO.Login,
-                Password = participantDTO.Password,
+                Password = passwordHash,
                 Participant_Type = participantDTO.Participant_Type
             };
 

@@ -28,6 +28,16 @@ namespace BlockCovid.Controllers
             return await _context.QrCode.ToListAsync();
         }
 
+        // GET: api/QrCodes/login
+        [HttpGet("{login}")]
+        public async Task<ActionResult<IEnumerable<QrCode>>> GetQrCode(string login)
+        {
+            // recupère le login dans le token, ne pas avoir donc le login en paramètre
+            return await _context.QrCode.Where(qr => qr.Participant.Login == login).ToListAsync();
+        }
+
+
+        /*
         // GET: api/QrCodes/5
         [HttpGet("{id}")]
         public async Task<ActionResult<QrCode>> GetQrCode(long id)
@@ -41,6 +51,7 @@ namespace BlockCovid.Controllers
 
             return qrCode;
         }
+        */
 
         // PUT: api/QrCodes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754

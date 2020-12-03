@@ -13,13 +13,10 @@ namespace BlockCovid.Services
         public ServiceMap()
         {
             CreateMap<Participant, ParticipantDto>();
-<<<<<<< HEAD
             CreateMap<CitizenQrCode, CitizenQrCodeDto>();
            // CreateMap<ParticipantDto, Participant>();
-=======
 
             CreateMap<Participant, ParticipantConnexionDto>();
->>>>>>> 335d7b644088deadbab27dc3080f988cd0a0f8a2
         }
     }
 }

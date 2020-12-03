@@ -10,11 +10,11 @@ namespace BlockCovid.Services
 {
     public class ServiceMap : Profile
     {
-
         public ServiceMap()
         {
             CreateMap<Participant, ParticipantDto>();
-        }
 
+           // CreateMap<ParticipantDto, Participant>();
+        }
     }
 }

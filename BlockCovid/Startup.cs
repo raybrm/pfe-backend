@@ -2,6 +2,7 @@ using AutoMapper;
 using BlockCovid.Dal;
 using BlockCovid.Dal.Repositories;
 using BlockCovid.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -9,10 +10,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
@@ -22,6 +25,7 @@ namespace BlockCovid
     {
 
         readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+        
 
         public Startup(IConfiguration configuration)
         {
@@ -33,9 +37,10 @@ namespace BlockCovid
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            
 
-          
-            services.AddCors(options =>
+
+        services.AddCors(options =>
             {
                 options.AddPolicy(name: MyAllowSpecificOrigins,
                                   builder =>
@@ -47,7 +52,11 @@ namespace BlockCovid
                                   });
             });
 
+<<<<<<< HEAD
 
+=======
+            
+>>>>>>> 335d7b644088deadbab27dc3080f988cd0a0f8a2
 
             services.AddControllers().AddJsonOptions(options =>
             {
@@ -70,7 +79,26 @@ namespace BlockCovid
             services.AddScoped<ICitizensRepository, EFCitizensRepository>();
             services.AddScoped<IParticipantsRepository, EFParticipantsRepository>();
             services.AddAutoMapper(typeof(Startup).Assembly);
-        }
+
+            string SECRET_KEY = "PFE_BACKEND_2020_GRP_13";
+            var SIGNING_KEY = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SECRET_KEY));
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        //ce qu'on va utiliser
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateIssuerSigningKey = true,
+                        //setup validate data
+                        ValidIssuer = "GROUPE_13",
+                        ValidAudience = "readers",
+                        IssuerSigningKey = SIGNING_KEY
+                    };
+                });
+    }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

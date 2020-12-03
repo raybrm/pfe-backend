@@ -12,25 +12,26 @@ namespace BlockCovid.Dal
         {
             BlockCovidContext context = app.ApplicationServices
             .CreateScope().ServiceProvider.GetRequiredService<BlockCovidContext>();
-            if (context.Database.GetPendingMigrations().Any())
-            {
-                context.Database.Migrate();
-            }
             /*
-            if (!context.Citizens.Any())
-            {
-                context.Citizens.AddRange(
-                    new Citizen
-                    {
-                        Is_Positive = false
-                    },
-                    new Citizen
-                    {
-                        Is_Positive = false
-                    });
-                context.SaveChanges();
-            }
-            */
+           if (context.Database.GetPendingMigrations().Any())
+           {
+               context.Database.Migrate();
+           }
+
+           if (!context.Citizens.Any())
+           {
+               context.Citizens.AddRange(
+                   new Citizen
+                   {
+                       Is_Positive = false
+                   },
+                   new Citizen
+                   {
+                       Is_Positive = false
+                   });
+               context.SaveChanges();
+           }
+           */
         }
     }
 }

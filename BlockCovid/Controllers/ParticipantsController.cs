@@ -20,10 +20,12 @@ namespace BlockCovid.Controllers
     {
     
         private readonly IParticipantsRepository _participant;
+        private readonly BlockCovidContext _blockCovid;
 
-        public ParticipantsController(IParticipantsRepository participant)
+        public ParticipantsController(IParticipantsRepository participant, BlockCovidContext blockCovid)
         {
             _participant = participant;
+            _blockCovid = blockCovid;
         }
 
         // GET: api/Participants
@@ -31,7 +33,7 @@ namespace BlockCovid.Controllers
         public async Task<ActionResult<IEnumerable<ParticipantDto>>> GetParticipants()
         {
             
-            return await _context.Participants.Select(x=>ParticipantToDTO(x)).ToListAsync();
+            return await  _blockCovid.Participants.Select(x=>ParticipantToDTO(x)).ToListAsync();
         }
 
         // GET: api/Participants/5
@@ -64,8 +66,8 @@ namespace BlockCovid.Controllers
                 Participant_Type = (ParticipantType)participantDTO.Participant_Type
             };
 
-            _context.Participants.Add(participant);
-            await _context.SaveChangesAsync();
+            _blockCovid.Participants.Add(participant);
+            await _blockCovid.SaveChangesAsync();
             //return Ok();
             return CreatedAtAction("GetParticipant", new { id = participant.ParticipantID }, ParticipantToDTO(participant));
  
@@ -73,7 +75,7 @@ namespace BlockCovid.Controllers
 
         private bool ParticipantExists(long id)
         {
-            return _context.Participants.Any(e => e.ParticipantID == id);
+            return _blockCovid.Participants.Any(e => e.ParticipantID == id);
         }
 
         private static ParticipantDto ParticipantToDTO(Participant participant)

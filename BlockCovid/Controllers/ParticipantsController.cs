@@ -86,25 +86,25 @@ namespace BlockCovid.Controllers
  
         }
 
-        [HttpGet("login")]
-        public async Task<ActionResult<ParticipantConnexionDto>> Login(String login, String password)
+        [HttpPost("login")]
+        public async Task<ActionResult<ParticipantConnexionDto>> Login(ParticipantConnexionDto participantConnexionDto)
         {
 
           
-            var participant = await _blockCovid.Participants.Where(participant => participant.Login == login)
+            var participant = await _blockCovid.Participants.Where(participant => participant.Login == participantConnexionDto.Login)
                 .Select(x => _mapper.Map<ParticipantConnexionDto>(x)).
                 FirstOrDefaultAsync();
 
             if (participant == null)
             {
-                return BadRequest("Wrong password or mail");
+                return BadRequest("Wrong password or wrong mail");
             }
             string passwordHash = participant.Password;
-            bool verified = BCrypt.Net.BCrypt.Verify(password, passwordHash);
+            bool verified = BCrypt.Net.BCrypt.Verify(participantConnexionDto.Password, passwordHash);
 
             if (!verified)
             {
-                return BadRequest("Wrong password or mail");
+                return BadRequest("Wrong password or wrong mail");
             }
 
             string SECRET_KEY = "PFE_BACKEND_2020_GRP_13";

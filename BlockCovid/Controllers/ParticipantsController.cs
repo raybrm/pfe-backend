@@ -10,8 +10,6 @@ using BlockCovid.Models;
 using BlockCovid.Dal.Repositories;
 using BlockCovid.Interfaces;
 using BlockCovid.Models.Dto;
-using BlockCovid.Services;
-using AutoMapper;
 
 namespace BlockCovid.Controllers
 {
@@ -23,10 +21,9 @@ namespace BlockCovid.Controllers
     
         private readonly IParticipantsRepository _participant;
         private readonly BlockCovidContext _blockCovid;
-        private readonly IMapper _mapper;
-        public ParticipantsController(IParticipantsRepository participant, BlockCovidContext blockCovid,  IMapper mapper)
+
+        public ParticipantsController(IParticipantsRepository participant, BlockCovidContext blockCovid)
         {
-            _mapper = mapper;
             _participant = participant;
             _blockCovid = blockCovid;
         }
@@ -35,9 +32,7 @@ namespace BlockCovid.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ParticipantDto>>> GetParticipants()
         {
-            
-            
-            return await  _blockCovid.Participants.Select(x => _mapper.Map<ParticipantDto>(x)).ToListAsync();
+            return await  _blockCovid.Participants.Select(x => ParticipantToDTO(x)).ToListAsync();
         }
 
         // GET: api/Participants/5
@@ -51,9 +46,7 @@ namespace BlockCovid.Controllers
                 return NotFound();
             }
 
-            var participantDto = _mapper.Map<ParticipantDto>(participant);
-            //System.Diagnostics.Debug.WriteLine("OKOPKPOKPOOPKPOKOPKOPKPOKOKOPKOPOKKLBKHKJHKKJHHKJHKHKJ");
-            //System.Diagnostics.Debug.WriteLine(participantDto.Login + " " + participantDto.Password + " " + participantDto.Participant_Type + " " + participant.Password);
+            var participantDto = ParticipantToDTO(participant);
             return participantDto;
         }
 

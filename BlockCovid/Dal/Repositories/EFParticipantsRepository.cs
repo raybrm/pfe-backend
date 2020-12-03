@@ -17,8 +17,7 @@ namespace BlockCovid.Dal.Repositories
         }
         public async Task<Participant> CreateParticipantsAsync(Participant participant)
         {
-           // System.Diagnostics.Debug.WriteLine("OKOPKPOKPOOPKPOKOPKOPKPOKOKOPKOPOKKLBKHKJHKKJHHKJHKHKJ");
-          //  System.Diagnostics.Debug.WriteLine(participant.Login+ " "+participant.ParticipantID+" "+participant.Participant_Type+" "+participant.Password);
+           
             _context.Participants.Add(participant);
             await _context.SaveChangesAsync();
             return participant;

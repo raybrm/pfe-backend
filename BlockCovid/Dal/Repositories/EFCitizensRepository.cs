@@ -52,7 +52,7 @@ namespace BlockCovid.Dal.Repositories
             IQueryable<CitizenQrCode> listCustomer = from CitizenQrCode c in _context.CitizenQrCode
                                                         where c.CitizenId==1
                                                         select c ;
-
+            /*
             foreach(CitizenQrCode citizenQrCode in listCustomer)
             {
 
@@ -62,7 +62,7 @@ namespace BlockCovid.Dal.Repositories
                 DateTime dateMoinsUneHeure = citizenQrCode.Timestamp.AddHours(-1);
                 System.Diagnostics.Debug.WriteLine("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA1");
                 System.Diagnostics.Debug.WriteLine(dateMoinsUneHeure +" "+ citizenQrCode.Timestamp+" " + datePlusUneHeure);
-            }
+            }*/
 
             
         }

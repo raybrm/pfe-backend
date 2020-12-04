@@ -20,7 +20,7 @@ namespace BlockCovid.Models
         [Required]
         public string Password { get; set; }
         [Required]
-        public ParticipantType? Participant_Type { get; set; }
+        public ParticipantType Participant_Type { get; set; }
 
         //Navigation property
         public virtual ICollection<QrCode> QrCode { get; set; }

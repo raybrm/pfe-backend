@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using BlockCovid.Dal;
 using BlockCovid.Models;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BlockCovid.Controllers
 {
@@ -22,20 +23,25 @@ namespace BlockCovid.Controllers
         {
             _context = context;
         }
-
+        /*
         // GET: api/QrCodes
         [HttpGet]
         public async Task<ActionResult<IEnumerable<QrCode>>> GetQrCode()
         {
             return await _context.QrCode.ToListAsync();
-        }
+        }*/
 
-        // GET: api/QrCodes/login
-        [HttpGet("{login}")]
+
+        // GET: api/QrCodes
+        [Authorize] // valide token
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<QrCode>>> GetQrCode(string login)
         {
+            //var loginToken = User.Claims.FirstOrDefault(x => x.Type.ToString().Equals("login", StringComparison.InvariantCultureIgnoreCase));
+            //System.Diagnostics.Debug.WriteLine(loginToken);
             // recupère le login dans le token, ne pas avoir donc le login en paramètre
-            return await _context.QrCode.Where(qr => qr.Participant.Login == login).ToListAsync();
+            //return await _context.QrCode.Where(qr => qr.Participant.Login == login).ToListAsync();
+            return Ok("test");
         }
 
 

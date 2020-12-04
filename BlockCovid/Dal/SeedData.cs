@@ -12,7 +12,7 @@ namespace BlockCovid.Dal
         {
             BlockCovidContext context = app.ApplicationServices
             .CreateScope().ServiceProvider.GetRequiredService<BlockCovidContext>();
-            
+           /*Applique une migration si la base de données n'est pas à jour*/ 
            if (context.Database.GetPendingMigrations().Any())
            {
                context.Database.Migrate();

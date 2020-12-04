@@ -14,6 +14,7 @@ using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System;
+using System.Security.Claims;
 
 namespace BlockCovid.Controllers
 {
@@ -68,17 +69,18 @@ namespace BlockCovid.Controllers
             {
                 return BadRequest(ModelState);
             }
-
+            //TODO: check si l'email existe ou pas
             string passwordHash = BCrypt.Net.BCrypt.HashPassword(participantDTO.Password);
 
-
+            //Participant participant = _mapper.Map<Participant>(participantDTO);
+            
             var participant = new Participant
             {
                 Login = participantDTO.Login,
                 Password = passwordHash,
-                Participant_Type = participantDTO.Participant_Type
+                Participant_Type = (ParticipantType) participantDTO.Participant_Type
             };
-
+            
             _blockCovid.Participants.Add(participant);
             await _blockCovid.SaveChangesAsync();
 
@@ -89,11 +91,10 @@ namespace BlockCovid.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<ParticipantConnexionDto>> Login(ParticipantConnexionDto participantConnexionDto)
         {
-
-          
-            var participant = await _blockCovid.Participants.Where(participant => participant.Login == participantConnexionDto.Login)
-                .Select(x => _mapper.Map<ParticipantConnexionDto>(x)).
-                FirstOrDefaultAsync();
+            Participant participant = 
+                await _blockCovid.Participants
+                .Where(participant => participant.Login == participantConnexionDto.Login)
+                .FirstOrDefaultAsync();
 
             if (participant == null)
             {
@@ -107,17 +108,23 @@ namespace BlockCovid.Controllers
                 return BadRequest("Wrong password or wrong mail");
             }
 
+            /*TODO: Externaliser la création de token dans une classe particulière dans le dossier Service*/
             string SECRET_KEY = "PFE_BACKEND_2020_GRP_13";
             var SIGNING_KEY = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SECRET_KEY));
             var signingCredentials = new SigningCredentials(SIGNING_KEY, SecurityAlgorithms.HmacSha256);
-
-
+            
+            var role = participant.Participant_Type.ToString();
+            /*
+            var claims = new List<Claim>();
+            claims.Add(new Claim("login", participant.Login));
+            claims.Add(new Claim(ClaimTypes.Role, role));
+            */
 
             var tokenJWT = new JwtSecurityToken(
                 issuer: "GROUPE_13",
                 audience: "readers",
-                expires: DateTime.Now.AddHours(1),
                 signingCredentials: signingCredentials
+               // claims: claims
                 );
 
             return Ok(new JwtSecurityTokenHandler().WriteToken(tokenJWT));

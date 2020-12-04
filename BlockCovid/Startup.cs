@@ -89,7 +89,7 @@ namespace BlockCovid
                         //setup validate data
                         ValidIssuer = "GROUPE_13",
                         ValidAudience = "readers",
-                        IssuerSigningKey = SIGNING_KEY
+                        IssuerSigningKey = SIGNING_KEY,
                     };
                 });
     }

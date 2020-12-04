@@ -11,6 +11,7 @@ using BlockCovid.Models.Dto;
 using AutoMapper;
 using Microsoft.AspNetCore.Cors;
 using System.IdentityModel.Tokens.Jwt;
+using BlockCovid.Services;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System;
@@ -84,8 +85,11 @@ namespace BlockCovid.Controllers
             _blockCovid.Participants.Add(participant);
             await _blockCovid.SaveChangesAsync();
 
-            return CreatedAtAction("GetParticipant", new { id = participant.ParticipantID }, _mapper.Map<ParticipantDto>(participant));
- 
+            var tokenJWT = Token.createToken(participant);
+
+            //return CreatedAtAction("GetParticipant", new { id = participant.ParticipantID }, _mapper.Map<ParticipantDto>(participant));
+            return Ok(new JwtSecurityTokenHandler().WriteToken(tokenJWT));
+
         }
 
         // POST: api/Participants/login
@@ -110,7 +114,7 @@ namespace BlockCovid.Controllers
             }
 
             /*TODO: Externaliser la création de token dans une classe particulière dans le dossier Service*/
-            string SECRET_KEY = "PFE_BACKEND_2020_GRP_13";
+            /*string SECRET_KEY = "PFE_BACKEND_2020_GRP_13";
             var SIGNING_KEY = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SECRET_KEY));
             var signingCredentials = new SigningCredentials(SIGNING_KEY, SecurityAlgorithms.HmacSha256);
             
@@ -125,7 +129,8 @@ namespace BlockCovid.Controllers
                 expires: DateTime.Now.AddHours(1),
                 signingCredentials: signingCredentials,
                 claims: claims
-                );
+                );*/
+            var tokenJWT = Token.createToken(participant);
 
             return Ok(new JwtSecurityTokenHandler().WriteToken(tokenJWT));
         }

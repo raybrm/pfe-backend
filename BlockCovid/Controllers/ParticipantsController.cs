@@ -70,7 +70,8 @@ namespace BlockCovid.Controllers
             {
                 return BadRequest(ModelState);
             }
-            //TODO: check si l'email existe ou pas
+
+            //TODO: check si l'email existe ou pas => deja fait avec unique dans db
             string passwordHash = BCrypt.Net.BCrypt.HashPassword(participantDTO.Password);
 
             //Participant participant = _mapper.Map<Participant>(participantDTO);

@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Converters;
+﻿using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Converters;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
@@ -15,7 +16,9 @@ namespace BlockCovid.Models
         }
 
         public long ParticipantID { get; set; }
+
         [Required]
+        [StringLength(50)]
         public string Login { get; set; }
         [Required]
         public string Password { get; set; }

@@ -11,5 +11,12 @@ namespace BlockCovid.Dal
         public DbSet<Participant> Participants { get; set; }
         public DbSet<QrCode> QrCode { get; set; }
         public DbSet<CitizenQrCode> CitizenQrCode { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Participant>()
+        .HasIndex(p => p.Login)
+        .IsUnique();
+        }
     }
 }

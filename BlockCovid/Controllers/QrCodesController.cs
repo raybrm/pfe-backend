@@ -9,6 +9,8 @@ using BlockCovid.Dal;
 using BlockCovid.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Security.Claims;
 
 namespace BlockCovid.Controllers
 {
@@ -33,15 +35,16 @@ namespace BlockCovid.Controllers
 
 
         // GET: api/QrCodes
-        [Authorize] // valide token
+        //[Authorize(Roles = "Doctor")]  // valide token
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<QrCode>>> GetQrCode(string login)
+        public async Task<ActionResult<IEnumerable<QrCode>>> GetQrCode()
         {
-            //var loginToken = User.Claims.FirstOrDefault(x => x.Type.ToString().Equals("login", StringComparison.InvariantCultureIgnoreCase));
-            //System.Diagnostics.Debug.WriteLine(loginToken);
-            // recupère le login dans le token, ne pas avoir donc le login en paramètre
-            //return await _context.QrCode.Where(qr => qr.Participant.Login == login).ToListAsync();
-            return Ok("test");
+            //login dans le claims du token
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            var login = identity.FindFirst("login").Value;
+
+            return await _context.QrCode.Where(qr => qr.Participant.Login == login).ToListAsync();
         }
 
 

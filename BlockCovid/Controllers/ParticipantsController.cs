@@ -88,6 +88,7 @@ namespace BlockCovid.Controllers
  
         }
 
+        // POST: api/Participants/login
         [HttpPost("login")]
         public async Task<ActionResult<ParticipantConnexionDto>> Login(ParticipantConnexionDto participantConnexionDto)
         {
@@ -98,14 +99,14 @@ namespace BlockCovid.Controllers
 
             if (participant == null)
             {
-                return BadRequest("Wrong password or wrong mail");
+                return BadRequest(new { message = "Wrong password or wrong mail"});
             }
             string passwordHash = participant.Password;
             bool verified = BCrypt.Net.BCrypt.Verify(participantConnexionDto.Password, passwordHash);
 
             if (!verified)
             {
-                return BadRequest("Wrong password or wrong mail");
+                return BadRequest(new { message = "Wrong password or wrong mail" });
             }
 
             /*TODO: Externaliser la création de token dans une classe particulière dans le dossier Service*/
@@ -114,17 +115,16 @@ namespace BlockCovid.Controllers
             var signingCredentials = new SigningCredentials(SIGNING_KEY, SecurityAlgorithms.HmacSha256);
             
             var role = participant.Participant_Type.ToString();
-            /*
             var claims = new List<Claim>();
             claims.Add(new Claim("login", participant.Login));
             claims.Add(new Claim(ClaimTypes.Role, role));
-            */
 
             var tokenJWT = new JwtSecurityToken(
                 issuer: "GROUPE_13",
                 audience: "readers",
-                signingCredentials: signingCredentials
-               // claims: claims
+                expires: DateTime.Now.AddHours(1),
+                signingCredentials: signingCredentials,
+                claims: claims
                 );
 
             return Ok(new JwtSecurityTokenHandler().WriteToken(tokenJWT));

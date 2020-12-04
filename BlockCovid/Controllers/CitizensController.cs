@@ -27,7 +27,7 @@ namespace BlockCovid.Controllers
             _citizen = citizen;
             _mapper = mapper;
         }
-
+       
         // GET: api/Citizens
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Citizen>>> GetCitizens()
@@ -53,11 +53,19 @@ namespace BlockCovid.Controllers
         // POST: api/Citizens
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Citizen>> PostCitizen(Citizen citizen)
+        public async Task<ActionResult<Citizen>> PostCitizen(CitizenDto citizenDto)
         {
+            var citizen = new Citizen
+            {
+                 First_Name= citizenDto.First_Name,
+                 Last_Name = citizenDto.Last_Name,
+                 Is_Positive = false,
+                 TokenFireBase = citizenDto.TokenFireBase
+            };
+          
             var citizenToReturn = await _citizen.CreateCitizensAsync(citizen);
-
-            return CreatedAtAction("GetCitizen", new { id = citizen.CitizenID }, citizenToReturn);
+          
+            return CreatedAtAction("GetCitizen", new { id = citizen.CitizenID }, _mapper.Map<CitizenDto>(citizenToReturn));
         }
 
      

@@ -65,10 +65,7 @@ namespace BlockCovid.Controllers
            
 
           
-           /* System.Diagnostics.Debug.WriteLine("AAAAAAAAAAAAAAAAAA");
-            var citizenToReturn = await _citizen.CreateCitizensAsync(citizen);
-          
-            return CreatedAtAction("GetCitizen", new { id = citizen.CitizenID }, _mapper.Map<CitizenDto>(citizenToReturn));*/
+           
         }
 
      

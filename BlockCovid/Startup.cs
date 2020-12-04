@@ -45,7 +45,7 @@ namespace BlockCovid
                 options.AddPolicy(name: MyAllowSpecificOrigins,
                                   builder =>
                                   {
-                                      builder.WithOrigins("https://*.azurewebsites.net", "http://localhost:3000", "http://*.azurewebsites.net")
+                                      builder.WithOrigins("https://*.azurewebsites.net", "http://localhost:3000", "http://*.azurewebsites.net", "https://blockcovid-f89e6.web.app/")
                                       .AllowAnyHeader()
                                       .AllowAnyMethod()
                                       .SetIsOriginAllowedToAllowWildcardSubdomains(); 

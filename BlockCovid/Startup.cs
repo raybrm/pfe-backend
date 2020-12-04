@@ -37,28 +37,22 @@ namespace BlockCovid
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            
 
 
-            string SECRET_KEY = "PFE_BACKEND_2020_GRP_13";
-            var SIGNING_KEY = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SECRET_KEY));
+        services.AddCors(options =>
+            {
+                options.AddPolicy(name: MyAllowSpecificOrigins,
+                                  builder =>
+                                  {
+                                      builder.WithOrigins("https://*.azurewebsites.net", "http://localhost:3000", "http://*.azurewebsites.net", "https://blockcovid-f89e6.web.app/")
+                                      .AllowAnyHeader()
+                                      .AllowAnyMethod()
+                                      .SetIsOriginAllowedToAllowWildcardSubdomains(); 
+                                  });
+            });
 
-            services
-               .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-               .AddJwtBearer(options =>
-               {
-                   options.SaveToken = true;
-                   options.TokenValidationParameters = new TokenValidationParameters()
-                   {
-                        //ce qu'on va utiliser
-                        ValidateIssuer = true,
-                       ValidateAudience = true,
-                       ValidateIssuerSigningKey = true,
-                        //setup validate data
-                        ValidIssuer = "GROUPE_13",
-                       ValidAudience = "readers",
-                       IssuerSigningKey = SIGNING_KEY,
-                   };
-               });
+            
 
             services.AddControllers().AddJsonOptions(options =>
             {
@@ -80,20 +74,25 @@ namespace BlockCovid
             services.AddScoped<IParticipantsRepository, EFParticipantsRepository>();
             services.AddAutoMapper(typeof(Startup).Assembly);
 
-            services
-                .AddCors(options =>
+            string SECRET_KEY = "PFE_BACKEND_2020_GRP_13";
+            var SIGNING_KEY = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SECRET_KEY));
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
                 {
-                    options
-                    .AddPolicy(name: MyAllowSpecificOrigins,
-                                  builder =>
-                                  {
-                                      builder.WithOrigins("https://*.azurewebsites.net", "http://localhost:3000", "http://*.azurewebsites.net")
-                                      .AllowAnyHeader()
-                                      .AllowAnyMethod()
-                                      .SetIsOriginAllowedToAllowWildcardSubdomains();
-                                  });
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        //ce qu'on va utiliser
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateIssuerSigningKey = true,
+                        //setup validate data
+                        ValidIssuer = "GROUPE_13",
+                        ValidAudience = "readers",
+                        IssuerSigningKey = SIGNING_KEY,
+                    };
                 });
-        }
+    }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -112,10 +111,12 @@ namespace BlockCovid
             });
 
             app.UseHttpsRedirection();
+
             app.UseRouting();
-            app.UseAuthentication();
-            app.UseAuthorization();
             app.UseCors(MyAllowSpecificOrigins);
+
+            app.UseAuthorization();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

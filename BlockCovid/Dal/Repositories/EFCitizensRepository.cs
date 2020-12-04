@@ -80,60 +80,57 @@ namespace BlockCovid.Dal.Repositories
 
         public void NotifyFilters(string token)
         {
-            try
-            {
-                dynamic data = new
+            
+                try
                 {
-                    to = token, // Uncoment this if you want to test for single device
-                                                                                                                                                                                                // registration_ids = singlebatch, // this is for multiple user 
-                    notification = new
+                    dynamic data = new
                     {
-                        title = "Positiv",     // Notification title
-                        body = "pas bien ca ",    // Notification body data
-                        link = "--link--"       // When click on notification user redirect to this link
-                    }
-                };
+                        to = token, // Uncoment this if you want to test for single device
+                                    // registration_ids = singlebatch, // this is for multiple user 
+                        notification = new
+                        {
+                            title = "Positiv",     // Notification title
+                            body = "pas bien ca ",    // Notification body data
+                            link = "--link--"       // When click on notification user redirect to this link
+                        }
+                    };
 
-                //new System.Web.Script.Serialization.JavaScriptSerializer();
-                var json = JsonSerializer.Serialize(data);
+                    //new System.Web.Script.Serialization.JavaScriptSerializer();
+                    var json = JsonSerializer.Serialize(data);
 
-                Byte[] byteArray = Encoding.UTF8.GetBytes(json);
+                    Byte[] byteArray = Encoding.UTF8.GetBytes(json);
 
-                string SERVER_API_KEY = "AAAAu8EAEYM:APA91bHQEPeJrX7C-CsPj3dtc-oHWeFB2iTJSqix3CPVh1AiI_Iu_WcxLC9Gl4nkV1M2Im1qTRPaHA8NTiSoKokimJwP_apg0Kp6JU7MXwDXAp_5ENXu6yN_M14t5cR1JeL2tGDscawP";//Configuration["Firebase:SERVER_FIREBASE"];
+                    string SERVER_API_KEY = "AAAAu8EAEYM:APA91bHQEPeJrX7C-CsPj3dtc-oHWeFB2iTJSqix3CPVh1AiI_Iu_WcxLC9Gl4nkV1M2Im1qTRPaHA8NTiSoKokimJwP_apg0Kp6JU7MXwDXAp_5ENXu6yN_M14t5cR1JeL2tGDscawP";//Configuration["Firebase:SERVER_FIREBASE"];
 
 
-                WebRequest tRequest;
-                tRequest = WebRequest.Create("https://fcm.googleapis.com/fcm/send");
-                tRequest.Method = "post";
-                tRequest.ContentType = "application/json";
-                tRequest.Headers.Add(string.Format("Authorization: key={0}", SERVER_API_KEY));
+                    WebRequest tRequest;
+                    tRequest = WebRequest.Create("https://fcm.googleapis.com/fcm/send");
+                    tRequest.Method = "post";
+                    tRequest.ContentType = "application/json";
+                    tRequest.Headers.Add(string.Format("Authorization: key={0}", SERVER_API_KEY));
 
-                tRequest.ContentLength = byteArray.Length;
-                Stream dataStream = tRequest.GetRequestStream();
-                dataStream.Write(byteArray, 0, byteArray.Length);
-                dataStream.Close();
+                    tRequest.ContentLength = byteArray.Length;
+                    Stream dataStream = tRequest.GetRequestStream();
+                    dataStream.Write(byteArray, 0, byteArray.Length);
+                    dataStream.Close();
 
-                WebResponse tResponse = tRequest.GetResponse();
+                    WebResponse tResponse = tRequest.GetResponse();
 
-                dataStream = tResponse.GetResponseStream();
+                    dataStream = tResponse.GetResponseStream();
 
-                StreamReader tReader = new StreamReader(dataStream);
+                    StreamReader tReader = new StreamReader(dataStream);
 
-                String sResponseFromServer = tReader.ReadToEnd();
+                    String sResponseFromServer = tReader.ReadToEnd();
 
-                tReader.Close();
-                dataStream.Close();
-                tResponse.Close();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+                    tReader.Close();
+                    dataStream.Close();
+                    tResponse.Close();
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            
         }
-
-
     }
-}
-
-    
 }

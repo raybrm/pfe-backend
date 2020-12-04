@@ -61,7 +61,7 @@ namespace BlockCovid.Dal.Repositories
         {
 
 
-            /*  IQueryable<CitizenQrCodeDto> listCustomer = from CitizenQrCode c in _context.CitizenQrCode
+              IQueryable<CitizenQrCodeDto> listCustomer = from CitizenQrCode c in _context.CitizenQrCode
                                                           where c.CitizenId==1
                                                           select _mapper.Map<CitizenQrCodeDto>(c) ;
 
@@ -72,8 +72,9 @@ namespace BlockCovid.Dal.Repositories
 
                   DateTime datePlusUneHeure = citizenQrCode.Timestamp.AddHours(1);
                   DateTime dateMoinsUneHeure = citizenQrCode.Timestamp.AddHours(-1);
+                  
 
-              }*/
+              }
 
 
         }
@@ -98,7 +99,7 @@ namespace BlockCovid.Dal.Repositories
                    
                     var json = JsonSerializer.Serialize(data);
 
-                    Byte[] byteArray = Encoding.UTF8.GetBytes(json);
+                    byte[] byteArray = Encoding.UTF8.GetBytes(json);
 
                     string SERVER_API_KEY = "AAAAu8EAEYM:APA91bHQEPeJrX7C-CsPj3dtc-oHWeFB2iTJSqix3CPVh1AiI_Iu_WcxLC9Gl4nkV1M2Im1qTRPaHA8NTiSoKokimJwP_apg0Kp6JU7MXwDXAp_5ENXu6yN_M14t5cR1JeL2tGDscawP";//Configuration["Firebase:SERVER_FIREBASE"];
 
@@ -120,7 +121,7 @@ namespace BlockCovid.Dal.Repositories
 
                     StreamReader tReader = new StreamReader(dataStream);
 
-                    String sResponseFromServer = tReader.ReadToEnd();
+                    string sResponseFromServer = tReader.ReadToEnd();
 
                     tReader.Close();
                     dataStream.Close();

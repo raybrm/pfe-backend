@@ -5,16 +5,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using BlockCovid.Models.Dto;
 
 namespace BlockCovid.Dal.Repositories
 {
     public class EFCitizensRepository : ICitizensRepository
     {
         private readonly BlockCovidContext _context;
-
-        public EFCitizensRepository(BlockCovidContext context)
+        private readonly IMapper _mapper;
+        public EFCitizensRepository(BlockCovidContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
 
@@ -46,21 +49,25 @@ namespace BlockCovid.Dal.Repositories
 
 
 
-        public async Task<Citizen> ToNotify(long id)
+        public void ToNotify(long id)
         {
-            IQueryable<CitizenQrCode> listCustomer = from CitizenQrCode c in _context.Citizens
-                                                        where c.CitizenId==id
-                                                        select c ;
-
-            foreach(CitizenQrCode citizenQrCode in listCustomer)
+            
+           
+            IQueryable<CitizenQrCodeDto> listCustomer = from CitizenQrCode c in _context.CitizenQrCode
+                                                        where c.CitizenId==1
+                                                        select _mapper.Map<CitizenQrCodeDto>(c) ;
+            
+            foreach(CitizenQrCodeDto citizenQrCode in listCustomer)
             {
 
-                System.Diagnostics.Debug.WriteLine(citizenQrCode.Timestamp);
+                System.Diagnostics.Debug.WriteLine(citizenQrCode.Timestamp+" "+citizenQrCode.CitizenQrCodeId);
+                
+                DateTime datePlusUneHeure = citizenQrCode.Timestamp.AddHours(1);
+                DateTime dateMoinsUneHeure = citizenQrCode.Timestamp.AddHours(-1);
                
             }
 
-            Citizen citizenQrCod = null;
-            return await Task.FromResult(citizenQrCod);
+            
         }
 
     }

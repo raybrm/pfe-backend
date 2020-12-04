@@ -135,7 +135,7 @@ namespace BlockCovid.Dal.Repositories
 
         public CitizenDto IfCitizenInDbAsync(CitizenDto citizenDto)
         {
-            CitizenDto cDto = (from CitizenDto c in _context.Citizens
+            CitizenDto cDto = (from Citizen c in _context.Citizens
                                                         where c.TokenFireBase == citizenDto.TokenFireBase
                                      select _mapper.Map<CitizenDto>(c)).FirstOrDefault();
             if( cDto== null)

@@ -7,6 +7,7 @@ namespace BlockCovid.Models.Dto
 {
     public class CitizenDto
     {
+        public long CitizenID { get; set; }
         public string First_Name { get; set; }
         public string Last_Name { get; set; }
         public string TokenFireBase { get; set; }

@@ -1,4 +1,6 @@
 ﻿using BlockCovid.Models;
+using BlockCovid.Models.Dto;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +14,7 @@ namespace BlockCovid.Interfaces
         Task<Citizen> GetCitizenByIdAsync(long id);
         Task<Citizen> CreateCitizensAsync(Citizen citizen);
         void NotifyFilters(string token);
+        CitizenDto IfCitizenInDbAsync(CitizenDto citizenDto);
         void  ToNotify(long id);
     }
 }

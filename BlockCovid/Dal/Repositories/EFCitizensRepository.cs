@@ -95,7 +95,7 @@ namespace BlockCovid.Dal.Repositories
                         }
                     };
 
-                    //new System.Web.Script.Serialization.JavaScriptSerializer();
+                   
                     var json = JsonSerializer.Serialize(data);
 
                     Byte[] byteArray = Encoding.UTF8.GetBytes(json);
@@ -131,6 +131,20 @@ namespace BlockCovid.Dal.Repositories
                     throw;
                 }
             
+        }
+
+        public CitizenDto IfCitizenInDbAsync(CitizenDto citizenDto)
+        {
+            CitizenDto cDto = (from CitizenDto c in _context.Citizens
+                                                        where c.TokenFireBase == citizenDto.TokenFireBase
+                                     select _mapper.Map<CitizenDto>(c)).FirstOrDefault();
+            if( cDto== null)
+            {
+                
+                return null;
+            }
+           
+            return cDto;
         }
     }
 }

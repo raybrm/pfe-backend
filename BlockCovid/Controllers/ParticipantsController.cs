@@ -106,6 +106,7 @@ namespace BlockCovid.Controllers
             {
                 return BadRequest(new { message = "Wrong password or wrong mail"});
             }
+
             string passwordHash = participant.Password;
             bool verified = BCrypt.Net.BCrypt.Verify(participantConnexionDto.Password, passwordHash);
 

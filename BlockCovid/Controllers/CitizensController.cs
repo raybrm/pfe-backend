@@ -47,10 +47,19 @@ namespace BlockCovid.Controllers
 
         // POST: api/Citizens
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<CitizenDto>> PostCitizen(CitizenDto citizenDto)
+        [HttpPost("login")]
+        public async Task<ActionResult<CitizenDto>> LoginCitizen(CitizenDto citizenDto)
         {
-            CitizenDto cDto=_citizen.IfCitizenInDbAsync(citizenDto);
+            CitizenDto cDto= await _citizen.IfCitizenInDbAsync(citizenDto);
+            return cDto ;
+ 
+        }
+
+
+        [HttpPost("register")]
+        public async Task<ActionResult<CitizenDto>> RegisterCitizen(CitizenDto citizenDto)
+        {
+            CitizenDto cDto = await _citizen.IfCitizenInDbAsync(citizenDto);
             if (cDto == null)
             {
                 var citizen = _mapper.Map<Citizen>(citizenDto);
@@ -62,12 +71,9 @@ namespace BlockCovid.Controllers
             }
 
             return cDto;
-           
 
-          
-           
         }
 
-     
+
     }
 }

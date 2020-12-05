@@ -7,15 +7,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using BlockCovid.Models.Dto;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using System.Text;
 using System.Net;
 using System.IO;
 using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Runtime.Serialization.Json;
-using BlockCovid.Services;
+using BlockCovid.ConfigurationSettings;
+using Microsoft.Extensions.Options;
 
 namespace BlockCovid.Dal.Repositories
 {
@@ -23,9 +20,11 @@ namespace BlockCovid.Dal.Repositories
     {
         private readonly BlockCovidContext _context;
         private readonly IMapper _mapper;
-        public EFCitizensRepository(BlockCovidContext context, IMapper mapper)
+        private IOptions<FireBaseSettings> _fireBaseSettings;
+        public EFCitizensRepository(BlockCovidContext context, IMapper mapper, IOptions<FireBaseSettings> fireBaseSettings)
         {
             _context = context;
+            _fireBaseSettings = fireBaseSettings;
             _mapper = mapper;
         }
 
@@ -59,8 +58,6 @@ namespace BlockCovid.Dal.Repositories
 
         public void ToNotify(long id)
         {
-
-
               IQueryable<CitizenQrCodeDto> listCustomer = from CitizenQrCode c in _context.CitizenQrCode
                                                           where c.CitizenId==1
                                                           select _mapper.Map<CitizenQrCodeDto>(c) ;
@@ -75,8 +72,6 @@ namespace BlockCovid.Dal.Repositories
                   
 
               }
-
-
         }
 
         public void NotifyFilters(string token)
@@ -101,7 +96,7 @@ namespace BlockCovid.Dal.Repositories
 
                     byte[] byteArray = Encoding.UTF8.GetBytes(json);
 
-                    string SERVER_API_KEY = "AAAAu8EAEYM:APA91bHQEPeJrX7C-CsPj3dtc-oHWeFB2iTJSqix3CPVh1AiI_Iu_WcxLC9Gl4nkV1M2Im1qTRPaHA8NTiSoKokimJwP_apg0Kp6JU7MXwDXAp_5ENXu6yN_M14t5cR1JeL2tGDscawP";//Configuration["Firebase:SERVER_FIREBASE"];
+                string SERVER_API_KEY = _fireBaseSettings.Value.ServerFireBase;
 
 
                     WebRequest tRequest;
@@ -134,7 +129,7 @@ namespace BlockCovid.Dal.Repositories
             
         }
 
-        public CitizenDto IfCitizenInDbAsync(CitizenDto citizenDto)
+        public Task<CitizenDto> IfCitizenInDbAsync(CitizenDto citizenDto)
         {
             CitizenDto cDto = (from Citizen c in _context.Citizens
                                                         where c.TokenFireBase == citizenDto.TokenFireBase
@@ -145,7 +140,7 @@ namespace BlockCovid.Dal.Repositories
                 return null;
             }
            
-            return cDto;
+            return Task.FromResult(cDto);
         }
     }
 }

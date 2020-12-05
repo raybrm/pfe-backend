@@ -28,13 +28,6 @@ namespace BlockCovid.Dal.Repositories
             _mapper = mapper;
         }
 
-
-        public async Task<List<Citizen>> GetCitizensAsync()
-        {
-            return await _context.Citizens.ToListAsync();
-        }
-        
-
         public async Task<Citizen> GetCitizenByIdAsync(long id)
         {
             return await _context.Citizens.FindAsync(id);
@@ -59,7 +52,7 @@ namespace BlockCovid.Dal.Repositories
         public void ToNotify(long id)
         {
               IQueryable<CitizenQrCodeDto> listCustomer = from CitizenQrCode c in _context.CitizenQrCode
-                                                          where c.CitizenId==1
+                                                          where c.CitizenId==id                                                      
                                                           select _mapper.Map<CitizenQrCodeDto>(c) ;
 
               foreach(CitizenQrCodeDto citizenQrCode in listCustomer)
@@ -69,9 +62,19 @@ namespace BlockCovid.Dal.Repositories
 
                   DateTime datePlusUneHeure = citizenQrCode.Timestamp.AddHours(1);
                   DateTime dateMoinsUneHeure = citizenQrCode.Timestamp.AddHours(-1);
-                  
+             //   c.QrCodeId == citizenQrCode.QrCodeId
+                  IQueryable<CitizenDto> listCitizenDtoToNotify = from CitizenQrCode citizenQr in _context.CitizenQrCode
+                                                                        from Citizen citizen in _context.CitizenQrCode
+                                                                        where citizenQr.QrCodeId==citizenQrCode.QrCodeId
+                                                                        && citizenQr.Timestamp >= dateMoinsUneHeure && citizenQr.Timestamp<=datePlusUneHeure
+                                                                        && citizen.Is_Positive==false
+                                                                        select _mapper.Map<CitizenDto>(citizen);
+                foreach(CitizenDto citizenToNotify in listCitizenDtoToNotify)
+                {
+                    NotifyFilters(citizenToNotify.TokenFireBase);
+                }
 
-              }
+            }
         }
 
         public void NotifyFilters(string token)

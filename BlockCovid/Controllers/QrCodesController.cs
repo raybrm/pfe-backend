@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Security.Claims;
+using BlockCovid.Models.Dto;
 
 namespace BlockCovid.Controllers
 {

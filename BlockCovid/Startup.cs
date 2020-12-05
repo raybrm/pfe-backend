@@ -1,4 +1,5 @@
 using AutoMapper;
+using BlockCovid.ConfigurationSettings;
 using BlockCovid.Dal;
 using BlockCovid.Dal.Repositories;
 using BlockCovid.Interfaces;
@@ -52,7 +53,10 @@ namespace BlockCovid
                                   });
             });
 
-            
+            services.Configure<FireBaseSettings>(Configuration.GetSection("FireBase"));
+                
+
+
 
             services.AddControllers().AddJsonOptions(options =>
             {
@@ -72,6 +76,7 @@ namespace BlockCovid
             });
             services.AddScoped<ICitizensRepository, EFCitizensRepository>();
             services.AddScoped<IParticipantsRepository, EFParticipantsRepository>();
+            services.AddScoped<IQrCodesRepository, EFQrCodesRepository>();
             services.AddAutoMapper(typeof(Startup).Assembly);
 
             string SECRET_KEY = "PFE_BACKEND_2020_GRP_13";

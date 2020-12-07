@@ -144,9 +144,9 @@ namespace BlockCovid.Controllers
             var jwtSecurityToken = new JwtSecurityToken(
                issuer: _jwtSettings.Issuer,
                audience: _jwtSettings.Audience,
+               claims: claims,
                expires: DateTime.UtcNow.AddMinutes(_jwtSettings.DurationInMinutes),
-               signingCredentials: signingCredentials,
-               claims: claims
+               signingCredentials: signingCredentials
                );
 
             return jwtSecurityToken;

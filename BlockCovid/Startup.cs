@@ -113,14 +113,16 @@ namespace BlockCovid
                 //app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BlockCovid v1"));
 
             }
+            
             app.UseSwagger();
             app.UseSwaggerUI(c => {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "BlockCovid v1"); 
                 c.RoutePrefix = string.Empty; // To serve the Swagger UI at the app's root (http://localhost:<port>/)
             });
+            
 
             app.UseHttpsRedirection();
-
+            app.UseAuthentication();
             app.UseRouting();
             app.UseCors(MyAllowSpecificOrigins);
 

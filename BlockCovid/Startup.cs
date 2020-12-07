@@ -3,6 +3,7 @@ using BlockCovid.ConfigurationSettings;
 using BlockCovid.Dal;
 using BlockCovid.Dal.Repositories;
 using BlockCovid.Interfaces;
+using BlockCovid.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -79,8 +80,11 @@ namespace BlockCovid
             services.AddScoped<IQrCodesRepository, EFQrCodesRepository>();
             services.AddAutoMapper(typeof(Startup).Assembly);
 
-            string SECRET_KEY = "PFE_BACKEND_2020_GRP_13";
-            var SIGNING_KEY = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SECRET_KEY));
+
+            // services.Configure<JWTSettings>(Configuration.GetSection("JwtSettings"));
+            var jwtsettings = new JWTSettings();
+            Configuration.Bind(nameof(jwtsettings), jwtsettings);
+            services.AddSingleton(jwtsettings);
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
@@ -92,12 +96,12 @@ namespace BlockCovid
                         ValidateAudience = true,
                         ValidateIssuerSigningKey = true,
                         //setup validate data
-                        ValidIssuer = "GROUPE_13",
-                        ValidAudience = "readers",
-                        IssuerSigningKey = SIGNING_KEY,
+                        ValidIssuer = jwtsettings.Issuer,
+                        ValidAudience = jwtsettings.Audience,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtsettings.Secret_key))
                     };
                 });
-    }
+        }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -109,14 +113,16 @@ namespace BlockCovid
                 //app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BlockCovid v1"));
 
             }
+            
             app.UseSwagger();
             app.UseSwaggerUI(c => {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "BlockCovid v1"); 
                 c.RoutePrefix = string.Empty; // To serve the Swagger UI at the app's root (http://localhost:<port>/)
             });
+            
 
             app.UseHttpsRedirection();
-
+            app.UseAuthentication();
             app.UseRouting();
             app.UseCors(MyAllowSpecificOrigins);
 

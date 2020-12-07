@@ -28,19 +28,18 @@ namespace BlockCovid.Dal.Repositories
             _fireBaseSettings = fireBaseSettings;
             _mapper = mapper;
         }
-        public Task<QrCode> CreateQrCodeAsync(QrCode citizen)
+        public async Task<QrCode> CreateQrCodeAsync(QrCode qrCode)
         {
-            throw new NotImplementedException();
+            _context.QrCode.Add(qrCode);
+            await _context.SaveChangesAsync();
+            return qrCode;
         }
 
-        public Task<QrCode> GetQrCodeByIdAsync(long id)
+        public async Task<List<QrCodeDto>> GetQrCodesByLoginAsync(string login)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<QrCode>> GetQrCodesAsync()
-        {
-            throw new NotImplementedException();
+           return await _context.QrCode.Where(qr => qr.Participant.Login == login)
+                                        .Select(q => _mapper.Map<QrCodeDto>(q))
+                                        .ToListAsync();
         }
 
         public async Task ScanQrCode(ScanQrCodeDto scanQrCodeDto)
@@ -50,6 +49,7 @@ namespace BlockCovid.Dal.Repositories
 
             try
             {
+<<<<<<< HEAD
                /* QrCode qrCode = await _context.QrCode.FindAsync(scanQrCodeDto.QrCode);
                 System.Diagnostics.Debug.WriteLine("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
                 System.Diagnostics.Debug.WriteLine(qrCode.QrCodeID);*/
@@ -58,28 +58,38 @@ namespace BlockCovid.Dal.Repositories
                 switch (participantType)
                 {
                     case ParticipantType.Doctor:
+=======
+                //ParticipantType particiapantType = (await _context.QrCode.FindAsync(scanQrCodeDto.QrCode)).Participant.Participant_Type;
+                System.Diagnostics.Debug.WriteLine("wesh ---------------------------------------------------");
+                QrCode qrCode = await _context.QrCode.Include(qr => qr.Participant).FirstOrDefaultAsync(x => x.QrCodeID == (scanQrCodeDto.QrCode));
+                System.Diagnostics.Debug.WriteLine(qrCode.Participant.Login);
 
-                        await DeleteQrCode(scanQrCodeDto);
-                        await UpdateToPositive(scanQrCodeDto);
-                        await ToNotify(scanQrCodeDto.citizen);
+                /* switch (particiapantType)
+                 {
+                     case ParticipantType.Doctor:
+>>>>>>> 57172d2fe0ddb6717b31875e28238573384dda06
+
+                         await DeleteQrCode(scanQrCodeDto);
+                         await UpdateToPositive(scanQrCodeDto);
+                         await ToNotify(scanQrCodeDto.citizen);
 
 
-                        break;
+                         break;
 
-                    case ParticipantType.Establishment:
+                     case ParticipantType.Establishment:
 
-                        await InsertCitizenQrCode(scanQrCodeDto);
-            
-                        break;
+                         await InsertCitizenQrCode(scanQrCodeDto);
 
-                    default:
-                        Console.WriteLine("Default case");
-                        break;
-                }
+                         break;
 
-                await _context.SaveChangesAsync();
+                     default:
+                         Console.WriteLine("Default case");
+                         break;
+                 }
 
-                await transaction.CommitAsync();
+                 await _context.SaveChangesAsync();
+
+                 await transaction.CommitAsync();*/
             }
             catch (Exception)
             {

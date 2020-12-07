@@ -41,6 +41,10 @@ namespace BlockCovid.Dal.Repositories
                                         .Select(q => _mapper.Map<QrCodeDto>(q))
                                         .ToListAsync();
         }
+        public bool QrCodeExists(String id)
+        {
+            return _context.QrCode.Any(e => e.QrCodeID == id);
+        }
 
         public async Task ScanQrCode(ScanQrCodeDto scanQrCodeDto)
         {
@@ -49,51 +53,51 @@ namespace BlockCovid.Dal.Repositories
 
             try
             {
-                //ParticipantType particiapantType = (await _context.QrCode.FindAsync(scanQrCodeDto.QrCode)).Participant.Participant_Type;
-                System.Diagnostics.Debug.WriteLine("wesh ---------------------------------------------------");
-                QrCode qrCode = await _context.QrCode.Include(qr => qr.Participant).FirstOrDefaultAsync(x => x.QrCodeID == (scanQrCodeDto.QrCode));
-                System.Diagnostics.Debug.WriteLine(qrCode.Participant.Login);
+                if (QrCodeExists(scanQrCodeDto.QrCode))
+                {
+                    QrCode qrCode = await _context.QrCode.Include(qr => qr.Participant).FirstOrDefaultAsync(x => x.QrCodeID == (scanQrCodeDto.QrCode));
 
-                /* switch (particiapantType)
-                 {
-                     case ParticipantType.Doctor:
+                    ParticipantType participantType = qrCode.Participant.Participant_Type;
 
-                         await DeleteQrCode(scanQrCodeDto);
-                         await UpdateToPositive(scanQrCodeDto);
-                         await ToNotify(scanQrCodeDto.citizen);
+                    switch (participantType)
+                    {
+                        case ParticipantType.Doctor:
 
+                            await DeleteQrCode(scanQrCodeDto);
+                            await UpdateToPositive(scanQrCodeDto);
+                            await ToNotify(scanQrCodeDto.citizen);
 
-                         break;
+                            break;
 
-                     case ParticipantType.Establishment:
+                        case ParticipantType.Establishment:
 
-                         await InsertCitizenQrCode(scanQrCodeDto);
+                            await InsertCitizenQrCode(scanQrCodeDto);
 
-                         break;
+                            break;
 
-                     default:
-                         Console.WriteLine("Default case");
-                         break;
-                 }
+                        default:
+                            Console.WriteLine("Default case");
+                            break;
+                    }
 
-                 await _context.SaveChangesAsync();
+                    await _context.SaveChangesAsync();
 
-                 await transaction.CommitAsync();*/
+                    await transaction.CommitAsync();
+                }
             }
             catch (Exception)
             {
            
-                await transaction.RollbackToSavepointAsync("");
+                await transaction.RollbackToSavepointAsync("Erreur en db, rollback réalisé");
 
-           
             }
-         
-            
+   
         }
 
         private async Task UpdateToPositive(ScanQrCodeDto scanQrCodeDto)
         {
-                Citizen  citizen=(from Citizen c in _context.Citizens
+   
+            Citizen  citizen=(from Citizen c in _context.Citizens
                 where c.CitizenID==scanQrCodeDto.citizen
                 select c).SingleOrDefault();
                   citizen.Is_Positive = true;
@@ -114,65 +118,51 @@ namespace BlockCovid.Dal.Repositories
             await _context.SaveChangesAsync();
         }
         private async Task DeleteQrCode(ScanQrCodeDto scanQrCodeDto)
-        {       
-            var qrCode = await _context.QrCode.FindAsync(scanQrCodeDto.QrCode);
-            _context.QrCode.Remove(qrCode);
-            await _context.SaveChangesAsync();
+        {
+            QrCode qrCode = await _context.QrCode.FindAsync(scanQrCodeDto.QrCode);
+          
+          _context.QrCode.Remove(qrCode);
+           await _context.SaveChangesAsync();
 
-     
         }
 
         private async Task ToNotify(long id)
         {
 
+            HashSet < CitizenDto > ensembleCitizenDto= new HashSet<CitizenDto>(new ComparateurCitizens());
 
             IQueryable<CitizenQrCodeDto> listCustomer = await Task.Run(() => from CitizenQrCode c in _context.CitizenQrCode
                                                                              where c.CitizenId == id
                                                                              select _mapper.Map<CitizenQrCodeDto>(c));
-            await listCustomer.ForEachAsync(async citizenQrCode =>
-            {
-                DateTime datePlusUneHeure = citizenQrCode.Timestamp.AddHours(1);
 
-                //   c.QrCodeId == citizenQrCode.QrCodeId
-                IQueryable<CitizenDto> listCitizenDtoToNotify = await Task.Run(() => from CitizenQrCode citizenQr in _context.CitizenQrCode
-                                                                                     from Citizen citizen in _context.CitizenQrCode
-                                                                                     where citizenQr.QrCodeId == citizenQrCode.QrCodeId
-                                                                                     && citizenQr.Timestamp <= datePlusUneHeure
-                                                                                     //&& citizen.Is_Positive==false
-                                                                                     select _mapper.Map<CitizenDto>(citizen));
-                await listCitizenDtoToNotify.ForEachAsync(async c =>
+            await Task.Run(async () =>
+               await listCustomer.ForEachAsync(action: citizenQrCode =>
                 {
 
-                    await Task.Run(() => NotifyFilters(c.TokenFireBase));
+                    DateTime datePlusUneHeure = citizenQrCode.Timestamp.AddHours(1);
+                    IQueryable<CitizenDto> listCitizenDtoToNotify = (from CitizenQrCode citizenQr in _context.CitizenQrCode.Include(ct => ct.Citizen)
 
-                });
+                                                                    where citizenQr.QrCodeId == citizenQrCode.QrCodeId
+                                                                    && citizenQr.Timestamp <= datePlusUneHeure
+                                                                    && citizenQr.Citizen.Is_Positive==false
+                                                                    select _mapper.Map<CitizenDto>(citizenQr.Citizen)).Distinct();
 
-            });
-            /* foreach (CitizenQrCodeDto citizenQrCode in listCustomer)
-             {
-
-                 System.Diagnostics.Debug.WriteLine(citizenQrCode.Timestamp+" "+citizenQrCode.CitizenQrCodeId);
-
-                 DateTime datePlusUneHeure = citizenQrCode.Timestamp.AddHours(1);
-
-            //   c.QrCodeId == citizenQrCode.QrCodeId
-                 IQueryable<CitizenDto> listCitizenDtoToNotify = from CitizenQrCode citizenQr in _context.CitizenQrCode
-                                                                       from Citizen citizen in _context.CitizenQrCode
-                                                                       where citizenQr.QrCodeId==citizenQrCode.QrCodeId
-                                                                       && citizenQr.Timestamp<=datePlusUneHeure
-                                                                       //&& citizen.Is_Positive==false
-                                                                       select _mapper.Map<CitizenDto>(citizen);
-               foreach(CitizenDto citizenToNotify in listCitizenDtoToNotify)
-               {
-                   NotifyFilters(citizenToNotify.TokenFireBase);
-               }
-
-           }*/
+                    foreach (CitizenDto c in listCitizenDtoToNotify)
+                    {
+                        if (!ensembleCitizenDto.Contains(c))
+                        {
+                            NotifyFilters(c.TokenFireBase);
+                            ensembleCitizenDto.Add(c);
+                        }
+                    }
+               
+                }));
+          
         }
 
         public void NotifyFilters(string token)
         {
-
+           
             try
             {
                 dynamic data = new
@@ -181,9 +171,9 @@ namespace BlockCovid.Dal.Repositories
                                 // registration_ids = singlebatch, // this is for multiple user 
                     notification = new
                     {
-                        title = "Positiv",     // Notification title
-                        body = "pas bien ca ",    // Notification body data
-                        link = "--link--"       // When click on notification user redirect to this link
+                        title = "COVID-19",     // Notification title
+                        body = "allez vous faire diagnostiquer, vous êtes peut-être contaminer. ",    // Notification body data
+                        link = "https://www.youtube.com/watch?v=z6-FWJteNLI"       // When click on notification user redirect to this link
                     }
                 };
 

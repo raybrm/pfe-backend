@@ -135,15 +135,15 @@ namespace BlockCovid.Controllers
 
         //api/Participants/verification
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        [HttpPost("verification")]
-        public ActionResult<VerifyParticipant> Verification(VerifyParticipant participant)
+        [HttpGet("verification")]
+        public ActionResult Verification()
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
             string role = identity.FindFirst("http://schemas.microsoft.com/ws/2008/06/identity/claims/role").Value;
 
             System.Diagnostics.Debug.WriteLine(role);
 
-            return Ok(participant);
+            return Ok(new { role = role });
 
         }
 

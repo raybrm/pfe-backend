@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Security.Claims;
 using BlockCovid.Models.Dto;
+using AutoMapper;
 
 namespace BlockCovid.Controllers
 {
@@ -21,25 +22,29 @@ namespace BlockCovid.Controllers
     public class QrCodesController : ControllerBase
     {
         private readonly BlockCovidContext _context;
+        private readonly IMapper _mapper;
 
-        public QrCodesController(BlockCovidContext context)
+        public QrCodesController(BlockCovidContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
 
 
         // GET: api/QrCodes
-        //[Authorize(Roles = "Doctor")]  // valide token
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "Establishment")]  // valide token
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<QrCode>>> GetQrCode()
+        public async Task<ActionResult<IEnumerable<QrCodeDto>>> GetQrCode()
         {
             //login dans le claims du token
             var identity = HttpContext.User.Identity as ClaimsIdentity;
             var login = identity.FindFirst("login").Value;
 
-            return await _context.QrCode.Where(qr => qr.Participant.Login == login).ToListAsync();
+            return await _context.QrCode.Where(qr => qr.Participant.Login == login)
+                                        .Select(q => _mapper.Map<QrCodeDto>(q))
+                                        .ToListAsync();
         }
 
 
@@ -61,16 +66,42 @@ namespace BlockCovid.Controllers
 
 
         // POST: api/QrCodes
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<QrCode>> PostQrCode(QrCode qrCode)
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<ActionResult<QrCodeDto>> PostQrCode(QrCodeDto qrCodeDto)
         {
-            _context.QrCode.Add(qrCode);
-            await _context.SaveChangesAsync();
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-            return CreatedAtAction("GetQrCode", new { id = qrCode.QrCodeID }, qrCode);
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            var login = identity.FindFirst("login").Value;
+
+            // Requete db pour récupere l'id du login
+            var participant = await _context.Participants.Where(qr => qr.Login == login).FirstOrDefaultAsync();
+
+            if (participant == null)
+            {
+                return BadRequest(new { message = "No participant" });
+            }
+
+            QrCode qrCode = _mapper.Map<QrCode>(qrCodeDto);
+            qrCode.ParticipantID = participant.ParticipantID;
+
+            try
+            {
+                _context.QrCode.Add(qrCode);
+                await _context.SaveChangesAsync();
+            } catch(DbUpdateException exception)
+            {
+                return BadRequest(new {message = "The id already exist" });
+            }
+
+            return CreatedAtAction("GetQrCode", new { id = qrCode.QrCodeID }, qrCodeDto);
         }
 
+        /*
         // DELETE: api/QrCodes/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteQrCode(long id)
@@ -86,7 +117,7 @@ namespace BlockCovid.Controllers
 
             return NoContent();
         }
-
+        */
         private bool QrCodeExists(string id)
         {
             return _context.QrCode.Any(e => e.QrCodeID == id);

@@ -12,8 +12,11 @@ namespace BlockCovid.Models.Dto
         [Required]
         public string Login { get; set; }
         [Required]
-        [MaxLength(10), MinLength(5)]
+        [MaxLength(20), MinLength(5)]
         public string Password { get; set; }
+        [Required]
+        //[Compare("Password")]
+        public string ConfirmPassword { get; set; }
         [Required]
         public ParticipantType? Participant_Type { get; set; }
     }

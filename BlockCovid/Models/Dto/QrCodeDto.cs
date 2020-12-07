@@ -7,7 +7,7 @@ namespace BlockCovid.Models.Dto
 {
     public class QrCodeDto
     {
-        public long QrCodeID { get; set; }
+        public String QrCodeID { get; set; }
         public string Name { get; set; }
         public string Descritpion { get; set; }
         // Foreign Key

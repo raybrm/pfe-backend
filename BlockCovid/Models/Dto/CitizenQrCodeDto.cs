@@ -9,7 +9,7 @@ namespace BlockCovid.Models.Dto
     {
         public long CitizenQrCodeId { get; set; }
         public DateTime Timestamp { get; set; }
-        public long QrCodeId { get; set; }
+        public String QrCodeId { get; set; }
         public long CitizenId { get; set; }
     }
 }

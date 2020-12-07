@@ -53,8 +53,8 @@ namespace BlockCovid.Migrations
                     b.Property<long>("CitizenId")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("QrCodeId")
-                        .HasColumnType("bigint");
+                    b.Property<string>("QrCodeId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("Timestamp")
                         .HasColumnType("datetime2");
@@ -85,8 +85,7 @@ namespace BlockCovid.Migrations
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ParticipantID");
 
@@ -98,10 +97,8 @@ namespace BlockCovid.Migrations
 
             modelBuilder.Entity("BlockCovid.Models.QrCode", b =>
                 {
-                    b.Property<long>("QrCodeID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .UseIdentityColumn();
+                    b.Property<string>("QrCodeID")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Descritpion")
                         .HasColumnType("nvarchar(max)");
@@ -129,9 +126,7 @@ namespace BlockCovid.Migrations
 
                     b.HasOne("BlockCovid.Models.QrCode", "QrCode")
                         .WithMany("Citizen_Qr_Code")
-                        .HasForeignKey("QrCodeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("QrCodeId");
 
                     b.Navigation("Citizen");
 

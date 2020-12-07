@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace BlockCovid.Migrations
 {
-    public partial class Initial : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -15,6 +15,7 @@ namespace BlockCovid.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     First_Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Last_Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TokenFireBase = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Is_Positive = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -28,7 +29,7 @@ namespace BlockCovid.Migrations
                 {
                     ParticipantID = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Login = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Login = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Participant_Type = table.Column<int>(type: "int", nullable: false)
                 },
@@ -41,8 +42,7 @@ namespace BlockCovid.Migrations
                 name: "QrCode",
                 columns: table => new
                 {
-                    QrCodeID = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    QrCodeID = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Descritpion = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ParticipantID = table.Column<long>(type: "bigint", nullable: false)
@@ -65,7 +65,7 @@ namespace BlockCovid.Migrations
                     CitizenQrCodeId = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    QrCodeId = table.Column<long>(type: "bigint", nullable: false),
+                    QrCodeId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     CitizenId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
@@ -82,7 +82,7 @@ namespace BlockCovid.Migrations
                         column: x => x.QrCodeId,
                         principalTable: "QrCode",
                         principalColumn: "QrCodeID",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -94,6 +94,12 @@ namespace BlockCovid.Migrations
                 name: "IX_CitizenQrCode_QrCodeId",
                 table: "CitizenQrCode",
                 column: "QrCodeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Participants_Login",
+                table: "Participants",
+                column: "Login",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_QrCode_ParticipantID",

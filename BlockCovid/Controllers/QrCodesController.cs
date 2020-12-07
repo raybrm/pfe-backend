@@ -68,7 +68,7 @@ namespace BlockCovid.Controllers
         // PUT: api/QrCodes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutQrCode(long id, QrCode qrCode)
+        public async Task<IActionResult> PutQrCode(string id, QrCode qrCode)
         {
             if (id != qrCode.QrCodeID)
             {
@@ -123,7 +123,7 @@ namespace BlockCovid.Controllers
             return NoContent();
         }
 
-        private bool QrCodeExists(long id)
+        private bool QrCodeExists(string id)
         {
             return _context.QrCode.Any(e => e.QrCodeID == id);
         }

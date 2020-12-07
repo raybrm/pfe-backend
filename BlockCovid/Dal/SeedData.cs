@@ -51,24 +51,6 @@ namespace BlockCovid.Dal
                 context.SaveChanges();  
             }
 
-            if (!context.QrCode.Any())
-            {
-                context.QrCode.AddRange(
-                    new QrCode
-                    {
-                        Name="Name1",
-                        Descritpion="Description1",
-                        ParticipantID=1                      
-                    },
-                    new QrCode
-                    {
-                        Name = "Name2",
-                        Descritpion = "Description2",
-                        ParticipantID=2
-                    }
-                   );
-                context.SaveChanges();
-            }
 
             if (!context.Citizens.Any())
             {

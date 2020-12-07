@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlockCovid.Migrations
 {
     [DbContext(typeof(BlockCovidContext))]
-    [Migration("20201203094759_Initial")]
-    partial class Initial
+    [Migration("20201207084312_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -37,6 +37,9 @@ namespace BlockCovid.Migrations
                     b.Property<string>("Last_Name")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("TokenFireBase")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("CitizenID");
 
                     b.ToTable("Citizens");
@@ -52,8 +55,8 @@ namespace BlockCovid.Migrations
                     b.Property<long>("CitizenId")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("QrCodeId")
-                        .HasColumnType("bigint");
+                    b.Property<string>("QrCodeId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("Timestamp")
                         .HasColumnType("datetime2");
@@ -76,7 +79,8 @@ namespace BlockCovid.Migrations
 
                     b.Property<string>("Login")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("Participant_Type")
                         .HasColumnType("int");
@@ -87,15 +91,16 @@ namespace BlockCovid.Migrations
 
                     b.HasKey("ParticipantID");
 
+                    b.HasIndex("Login")
+                        .IsUnique();
+
                     b.ToTable("Participants");
                 });
 
             modelBuilder.Entity("BlockCovid.Models.QrCode", b =>
                 {
-                    b.Property<long>("QrCodeID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .UseIdentityColumn();
+                    b.Property<string>("QrCodeID")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Descritpion")
                         .HasColumnType("nvarchar(max)");
@@ -123,9 +128,7 @@ namespace BlockCovid.Migrations
 
                     b.HasOne("BlockCovid.Models.QrCode", "QrCode")
                         .WithMany("Citizen_Qr_Code")
-                        .HasForeignKey("QrCodeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("QrCodeId");
 
                     b.Navigation("Citizen");
 

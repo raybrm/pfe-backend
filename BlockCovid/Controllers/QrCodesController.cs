@@ -26,13 +26,7 @@ namespace BlockCovid.Controllers
         {
             _context = context;
         }
-        /*
-        // GET: api/QrCodes
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<QrCode>>> GetQrCode()
-        {
-            return await _context.QrCode.ToListAsync();
-        }*/
+
 
 
         // GET: api/QrCodes
@@ -65,6 +59,7 @@ namespace BlockCovid.Controllers
         }
         */
 
+<<<<<<< HEAD
         // PUT: api/QrCodes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
@@ -96,6 +91,8 @@ namespace BlockCovid.Controllers
 
             return NoContent();
         }
+=======
+>>>>>>> feebd32d04f4b6bb251dba26e057ca3e7e4af834
 
         // POST: api/QrCodes
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -124,7 +121,7 @@ namespace BlockCovid.Controllers
             return NoContent();
         }
 
-        private bool QrCodeExists(long id)
+        private bool QrCodeExists(string id)
         {
             return _context.QrCode.Any(e => e.QrCodeID == id);
         }

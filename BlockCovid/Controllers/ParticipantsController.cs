@@ -61,20 +61,22 @@ namespace BlockCovid.Controllers
         }
 
         // POST: api/Participants
-
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost("register")]
         public async Task<ActionResult<ParticipantDto>> PostParticipant(ParticipantDto participantDTO)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
+            } 
+
+            if (!participantDTO.ConfirmPassword.Equals(participantDTO.Password))
+            {
+                return StatusCode(412);
             }
 
-            //TODO: check si l'email existe ou pas => deja fait avec unique dans db
             string passwordHash = BCrypt.Net.BCrypt.HashPassword(participantDTO.Password);
 
-            //Participant participant = _mapper.Map<Participant>(participantDTO);
+            //TODO: Participant participant = _mapper.Map<Participant>(participantDTO);
             
             var participant = new Participant
             {
@@ -82,9 +84,17 @@ namespace BlockCovid.Controllers
                 Password = passwordHash,
                 Participant_Type = (ParticipantType) participantDTO.Participant_Type
             };
-            
-            _blockCovid.Participants.Add(participant);
-            await _blockCovid.SaveChangesAsync();
+
+            try
+            {
+                _blockCovid.Participants.Add(participant);
+                await _blockCovid.SaveChangesAsync();
+            }
+            catch (DbUpdateException exception)
+            {
+                return Conflict(new { message = "The login already exist" });
+            }
+
 
             var tokenJWT = Token.createToken(participant);
 
@@ -97,6 +107,11 @@ namespace BlockCovid.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<ParticipantConnexionDto>> Login(ParticipantConnexionDto participantConnexionDto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             Participant participant = 
                 await _blockCovid.Participants
                 .Where(participant => participant.Login == participantConnexionDto.Login)

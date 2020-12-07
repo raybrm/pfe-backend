@@ -59,15 +59,12 @@ namespace BlockCovid.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<CitizenDto>> RegisterCitizen(CitizenDto citizenDto)
         {
-            System.Diagnostics.Debug.WriteLine(citizenDto.First_Name);
             CitizenDto cDto = await _citizen.IfCitizenInDbAsync(citizenDto);
-            System.Diagnostics.Debug.WriteLine(citizenDto.First_Name);
             if (cDto == null)
             {
                 var citizen = _mapper.Map<Citizen>(citizenDto);
 
 
-                System.Diagnostics.Debug.WriteLine("AAAAAAAAAAAAAAAAAA");
                 var citizenToReturn = await _citizen.CreateCitizensAsync(citizen);
                 return CreatedAtAction("GetCitizen", new { id = citizen.CitizenID }, _mapper.Map<CitizenDto>(citizenToReturn));
             }

@@ -58,7 +58,6 @@ namespace BlockCovid.Dal.Repositories
 
                         await DeleteQrCode(scanQrCodeDto);
                         await UpdateToPositive(scanQrCodeDto);
-
                         await ToNotify(scanQrCodeDto.citizen);
 
 

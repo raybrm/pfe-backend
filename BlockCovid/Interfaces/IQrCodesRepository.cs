@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BlockCovid.Interfaces
 {
-    interface IQrCodesRepository
+    public interface IQrCodesRepository
     {
         Task<List<QrCode>> GetQrCodesAsync();
         Task<QrCode> GetQrCodeByIdAsync(long id);

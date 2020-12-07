@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Security.Claims;
 using BlockCovid.Models.Dto;
+using BlockCovid.Interfaces;
 using AutoMapper;
 
 namespace BlockCovid.Controllers
@@ -23,11 +24,13 @@ namespace BlockCovid.Controllers
     {
         private readonly BlockCovidContext _context;
         private readonly IMapper _mapper;
+        private readonly IQrCodesRepository _qrCodesRepository;
 
-        public QrCodesController(BlockCovidContext context, IMapper mapper)
+        public QrCodesController(BlockCovidContext context, IMapper mapper, IQrCodesRepository qrCodesRepository)
         {
             _context = context;
             _mapper = mapper;
+            _qrCodesRepository = qrCodesRepository;
         }
 
 
@@ -126,6 +129,7 @@ namespace BlockCovid.Controllers
         [HttpPost("scanQrCode")]
         public async Task<IActionResult> scanQrCode(ScanQrCodeDto scanQrCodeDto)
         {
+            await _qrCodesRepository.ScanQrCode(scanQrCodeDto);
             return  Ok();
         }
     }

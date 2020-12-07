@@ -9,9 +9,8 @@ namespace BlockCovid.Interfaces
 {
     public interface IQrCodesRepository
     {
-        Task<List<QrCode>> GetQrCodesAsync();
-        Task<QrCode> GetQrCodeByIdAsync(long id);
-        Task<QrCode> CreateQrCodeAsync(QrCode citizen);
+        Task<List<QrCodeDto>> GetQrCodesByLoginAsync(string login);
+        Task<QrCode> CreateQrCodeAsync(QrCode qrCode);
         Task ScanQrCode(ScanQrCodeDto scanQrCodeDto);
     }
 }

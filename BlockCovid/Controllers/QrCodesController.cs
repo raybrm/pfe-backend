@@ -22,15 +22,17 @@ namespace BlockCovid.Controllers
     [ApiController]
     public class QrCodesController : ControllerBase
     {
-        private readonly BlockCovidContext _context;
+        //private readonly BlockCovidContext _context;
         private readonly IMapper _mapper;
         private readonly IQrCodesRepository _qrCodesRepository;
+        private readonly IParticipantsRepository _participantRepository;
 
-        public QrCodesController(BlockCovidContext context, IMapper mapper, IQrCodesRepository qrCodesRepository)
+        public QrCodesController( IMapper mapper, IQrCodesRepository qrCodesRepository, IParticipantsRepository participant)
         {
-            _context = context;
+           // _context = context;
             _mapper = mapper;
             _qrCodesRepository = qrCodesRepository;
+            _participantRepository = participant;
         }
 
 
@@ -43,11 +45,10 @@ namespace BlockCovid.Controllers
         {
             //login dans le claims du token
             var identity = HttpContext.User.Identity as ClaimsIdentity;
-            var login = identity.FindFirst("login").Value;
+            string login = identity.FindFirst("login").Value;
+           
 
-            return await _context.QrCode.Where(qr => qr.Participant.Login == login)
-                                        .Select(q => _mapper.Map<QrCodeDto>(q))
-                                        .ToListAsync();
+            return await _qrCodesRepository.GetQrCodesByLoginAsync(login);
         }
 
 
@@ -79,10 +80,10 @@ namespace BlockCovid.Controllers
             }
 
             var identity = HttpContext.User.Identity as ClaimsIdentity;
-            var login = identity.FindFirst("login").Value;
+            string login = identity.FindFirst("login").Value;
 
             // Requete db pour récupere l'id du login
-            var participant = await _context.Participants.Where(qr => qr.Login == login).FirstOrDefaultAsync();
+            var participant = await _participantRepository.GetParticipantByLoginAsync(login);
 
             if (participant == null)
             {
@@ -94,8 +95,7 @@ namespace BlockCovid.Controllers
 
             try
             {
-                _context.QrCode.Add(qrCode);
-                await _context.SaveChangesAsync();
+                await _qrCodesRepository.CreateQrCodeAsync(qrCode);
             } catch(DbUpdateException exception)
             {
                 return BadRequest(new {message = "The id already exist" });
@@ -121,10 +121,6 @@ namespace BlockCovid.Controllers
             return NoContent();
         }
         */
-        private bool QrCodeExists(string id)
-        {
-            return _context.QrCode.Any(e => e.QrCodeID == id);
-        }
 
         [HttpPost("scanQrCode")]
         public async Task<IActionResult> scanQrCode(ScanQrCodeDto scanQrCodeDto)

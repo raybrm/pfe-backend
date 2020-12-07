@@ -13,7 +13,7 @@ namespace BlockCovid.Models
 
         public String QrCodeID { get; set; }
         public string Name { get; set; }
-        public string Descritpion { get; set; }
+        public string Description { get; set; }
         // Foreign Key
         public long ParticipantID { get; set; }
         // Navigation property

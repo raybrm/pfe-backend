@@ -14,6 +14,8 @@ using System;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace BlockCovid.Controllers
 {
@@ -129,6 +131,20 @@ namespace BlockCovid.Controllers
             var tokenJWT = GenerateJWToken(participant);
 
             return Ok(new JwtSecurityTokenHandler().WriteToken(tokenJWT));
+        }
+
+        //api/Participants/verification
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpPost("verification")]
+        public ActionResult<VerifyParticipant> Verification(VerifyParticipant participant)
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            string role = identity.FindFirst("http://schemas.microsoft.com/ws/2008/06/identity/claims/role").Value;
+
+            System.Diagnostics.Debug.WriteLine(role);
+
+            return Ok(participant);
+
         }
 
         private JwtSecurityToken GenerateJWToken(Participant participant)

@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace BlockCovid.Models.Dto
 {
-    public class QrCodeDto
+    public class VerifyParticipant
     {
         [Required]
-        public String QrCodeID { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public string Token { get; set; }
+        public ParticipantType Role { get; set; }
     }
 }

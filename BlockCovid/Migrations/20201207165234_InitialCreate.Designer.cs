@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlockCovid.Migrations
 {
     [DbContext(typeof(BlockCovidContext))]
-    [Migration("20201207084312_InitialCreate")]
+    [Migration("20201207165234_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -102,7 +102,7 @@ namespace BlockCovid.Migrations
                     b.Property<string>("QrCodeID")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Descritpion")
+                    b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")

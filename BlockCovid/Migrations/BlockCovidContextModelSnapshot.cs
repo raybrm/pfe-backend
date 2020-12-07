@@ -100,7 +100,7 @@ namespace BlockCovid.Migrations
                     b.Property<string>("QrCodeID")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Descritpion")
+                    b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")

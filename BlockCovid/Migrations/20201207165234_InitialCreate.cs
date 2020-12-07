@@ -44,7 +44,7 @@ namespace BlockCovid.Migrations
                 {
                     QrCodeID = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Descritpion = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ParticipantID = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>

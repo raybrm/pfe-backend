@@ -26,13 +26,7 @@ namespace BlockCovid.Controllers
         {
             _context = context;
         }
-        /*
-        // GET: api/QrCodes
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<QrCode>>> GetQrCode()
-        {
-            return await _context.QrCode.ToListAsync();
-        }*/
+
 
 
         // GET: api/QrCodes

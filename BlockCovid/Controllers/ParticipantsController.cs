@@ -10,7 +10,10 @@ using AutoMapper;
 using Microsoft.AspNetCore.Cors;
 using System.IdentityModel.Tokens.Jwt;
 using BlockCovid.Services;
-
+using System;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using System.Security.Claims;
 
 namespace BlockCovid.Controllers
 {
@@ -23,13 +26,15 @@ namespace BlockCovid.Controllers
     
         private readonly IParticipantsRepository _participant;
         private readonly IMapper _mapper;
+        private readonly JWTSettings _jwtSettings;
 
 
-        public ParticipantsController(IParticipantsRepository participant, IMapper mapper)
+        public ParticipantsController(IParticipantsRepository participant, IMapper mapper, JWTSettings jwtSettings)
         {
             _participant = participant;
            // _blockCovid = blockCovid;
             _mapper = mapper;
+            _jwtSettings = jwtSettings;
         }
 
         // GET: api/Participants
@@ -89,7 +94,7 @@ namespace BlockCovid.Controllers
             }
 
 
-            var tokenJWT = Token.createToken(participant);
+            var tokenJWT = GenerateJWToken(participant);
 
             //return CreatedAtAction("GetParticipant", new { id = participant.ParticipantID }, _mapper.Map<ParticipantDto>(participant));
             return Ok(new JwtSecurityTokenHandler().WriteToken(tokenJWT));
@@ -121,9 +126,30 @@ namespace BlockCovid.Controllers
             }
 
             
-            var tokenJWT = Token.createToken(participant);
+            var tokenJWT = GenerateJWToken(participant);
 
             return Ok(new JwtSecurityTokenHandler().WriteToken(tokenJWT));
+        }
+
+        private JwtSecurityToken GenerateJWToken(Participant participant)
+        {
+            var SIGNING_KEY = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Secret_key));
+            var signingCredentials = new SigningCredentials(SIGNING_KEY, SecurityAlgorithms.HmacSha256);
+
+            var role = participant.Participant_Type.ToString();
+            var claims = new List<Claim>();
+            claims.Add(new Claim("login", participant.Login));
+            claims.Add(new Claim(ClaimTypes.Role, role));
+
+            var jwtSecurityToken = new JwtSecurityToken(
+               issuer: _jwtSettings.Issuer,
+               audience: _jwtSettings.Audience,
+               expires: DateTime.UtcNow.AddMinutes(_jwtSettings.DurationInMinutes),
+               signingCredentials: signingCredentials,
+               claims: claims
+               );
+
+            return jwtSecurityToken;
         }
     }
 }

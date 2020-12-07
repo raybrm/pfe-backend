@@ -35,6 +35,7 @@ namespace BlockCovid.Controllers
         // GET: api/QrCodes
         [Authorize(Roles = "Establishment")]  // valide token
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<QrCodeDto>>> GetQrCode()
         {

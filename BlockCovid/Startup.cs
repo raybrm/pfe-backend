@@ -3,6 +3,7 @@ using BlockCovid.ConfigurationSettings;
 using BlockCovid.Dal;
 using BlockCovid.Dal.Repositories;
 using BlockCovid.Interfaces;
+using BlockCovid.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -79,8 +80,11 @@ namespace BlockCovid
             services.AddScoped<IQrCodesRepository, EFQrCodesRepository>();
             services.AddAutoMapper(typeof(Startup).Assembly);
 
-            string SECRET_KEY = "PFE_BACKEND_2020_GRP_13";
-            var SIGNING_KEY = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SECRET_KEY));
+
+            // services.Configure<JWTSettings>(Configuration.GetSection("JwtSettings"));
+            var jwtsettings = new JWTSettings();
+            Configuration.Bind(nameof(jwtsettings), jwtsettings);
+            services.AddSingleton(jwtsettings);
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
@@ -92,9 +96,9 @@ namespace BlockCovid
                         ValidateAudience = true,
                         ValidateIssuerSigningKey = true,
                         //setup validate data
-                        ValidIssuer = "GROUPE_13",
-                        ValidAudience = "readers",
-                        IssuerSigningKey = SIGNING_KEY,
+                        ValidIssuer = jwtsettings.Issuer,
+                        ValidAudience = jwtsettings.Audience,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtsettings.Secret_key))
                     };
                 });
     }

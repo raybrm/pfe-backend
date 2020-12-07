@@ -22,14 +22,12 @@ namespace BlockCovid.Controllers
     [ApiController]
     public class QrCodesController : ControllerBase
     {
-        //private readonly BlockCovidContext _context;
         private readonly IMapper _mapper;
         private readonly IQrCodesRepository _qrCodesRepository;
         private readonly IParticipantsRepository _participantRepository;
 
         public QrCodesController( IMapper mapper, IQrCodesRepository qrCodesRepository, IParticipantsRepository participant)
         {
-           // _context = context;
             _mapper = mapper;
             _qrCodesRepository = qrCodesRepository;
             _participantRepository = participant;
@@ -39,8 +37,6 @@ namespace BlockCovid.Controllers
 
         // GET: api/QrCodes
         [Authorize(Roles = "Establishment")]  // valide token
-        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<QrCodeDto>>> GetQrCode()
         {
@@ -51,23 +47,6 @@ namespace BlockCovid.Controllers
 
             return await _qrCodesRepository.GetQrCodesByLoginAsync(login);
         }
-
-
-        /*
-        // GET: api/QrCodes/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<QrCode>> GetQrCode(long id)
-        {
-            var qrCode = await _context.QrCode.FindAsync(id);
-
-            if (qrCode == null)
-            {
-                return NotFound();
-            }
-
-            return qrCode;
-        }
-        */
 
 
         // POST: api/QrCodes
@@ -104,24 +83,6 @@ namespace BlockCovid.Controllers
 
             return CreatedAtAction("GetQrCode", new { id = qrCode.QrCodeID }, qrCodeDto);
         }
-
-        /*
-        // DELETE: api/QrCodes/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteQrCode(long id)
-        {
-            var qrCode = await _context.QrCode.FindAsync(id);
-            if (qrCode == null)
-            {
-                return NotFound();
-            }
-
-            _context.QrCode.Remove(qrCode);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-        */
 
         [HttpPost("scanQrCode")]
         public async Task<IActionResult> scanQrCode(ScanQrCodeDto scanQrCodeDto)

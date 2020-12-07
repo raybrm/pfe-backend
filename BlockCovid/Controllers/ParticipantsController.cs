@@ -34,7 +34,6 @@ namespace BlockCovid.Controllers
         public ParticipantsController(IParticipantsRepository participant, IMapper mapper, JWTSettings jwtSettings)
         {
             _participant = participant;
-           // _blockCovid = blockCovid;
             _mapper = mapper;
             _jwtSettings = jwtSettings;
         }

@@ -49,16 +49,6 @@ namespace BlockCovid.Dal.Repositories
 
             try
             {
-<<<<<<< HEAD
-               /* QrCode qrCode = await _context.QrCode.FindAsync(scanQrCodeDto.QrCode);
-                System.Diagnostics.Debug.WriteLine("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-                System.Diagnostics.Debug.WriteLine(qrCode.QrCodeID);*/
-
-                ParticipantType participantType = ParticipantType.Establishment;
-                switch (participantType)
-                {
-                    case ParticipantType.Doctor:
-=======
                 //ParticipantType particiapantType = (await _context.QrCode.FindAsync(scanQrCodeDto.QrCode)).Participant.Participant_Type;
                 System.Diagnostics.Debug.WriteLine("wesh ---------------------------------------------------");
                 QrCode qrCode = await _context.QrCode.Include(qr => qr.Participant).FirstOrDefaultAsync(x => x.QrCodeID == (scanQrCodeDto.QrCode));
@@ -67,7 +57,6 @@ namespace BlockCovid.Dal.Repositories
                 /* switch (particiapantType)
                  {
                      case ParticipantType.Doctor:
->>>>>>> 57172d2fe0ddb6717b31875e28238573384dda06
 
                          await DeleteQrCode(scanQrCodeDto);
                          await UpdateToPositive(scanQrCodeDto);

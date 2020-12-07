@@ -50,9 +50,12 @@ namespace BlockCovid.Dal.Repositories
 
             try
             {
-                ParticipantType particiapantType = (await _context.QrCode.FindAsync(scanQrCodeDto.QrCode)).Participant.Participant_Type;
+               /* QrCode qrCode = await _context.QrCode.FindAsync(scanQrCodeDto.QrCode);
+                System.Diagnostics.Debug.WriteLine("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+                System.Diagnostics.Debug.WriteLine(qrCode.QrCodeID);*/
 
-                switch (particiapantType)
+                ParticipantType participantType = ParticipantType.Establishment;
+                switch (participantType)
                 {
                     case ParticipantType.Doctor:
 

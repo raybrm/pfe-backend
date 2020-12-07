@@ -1,7 +1,8 @@
-﻿using BlockCovid.Interfaces;
+﻿using AutoMapper;
+using BlockCovid.Interfaces;
 using BlockCovid.Models;
+using BlockCovid.Models.Dto;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,9 +12,11 @@ namespace BlockCovid.Dal.Repositories
     public class EFParticipantsRepository : IParticipantsRepository
     {
         private readonly BlockCovidContext _context;
-        public EFParticipantsRepository(BlockCovidContext context)
+        private readonly IMapper _mapper;
+        public EFParticipantsRepository(BlockCovidContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
         public async Task<Participant> CreateParticipantsAsync(Participant participant)
         {
@@ -28,15 +31,16 @@ namespace BlockCovid.Dal.Repositories
             return await _context.Participants.FindAsync(id);
         }
 
-        public async Task<List<Participant>> GetParticipantsAsync()
+        public async Task<List<ParticipantDto>> GetParticipantsAsync()
         {
-            return await _context.Participants.ToListAsync();
+            return await _context.Participants.Select(x => _mapper.Map<ParticipantDto>(x)).ToListAsync();
         }
-       
 
-        private bool ParticipantExists(long id)
+        public async Task<Participant> GetParticipantByLoginAsync(string login)
         {
-            return _context.Participants.Any(e => e.ParticipantID == id);
+            return await _context.Participants
+                .Where(p => p.Login == login)
+                .FirstOrDefaultAsync();
         }
     }
 }

@@ -1,10 +1,8 @@
 ﻿
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using BlockCovid.Dal;
 using BlockCovid.Models;
 using BlockCovid.Interfaces;
 using BlockCovid.Models.Dto;
@@ -12,10 +10,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Cors;
 using System.IdentityModel.Tokens.Jwt;
 using BlockCovid.Services;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using System;
-using System.Security.Claims;
+
 
 namespace BlockCovid.Controllers
 {
@@ -27,14 +22,13 @@ namespace BlockCovid.Controllers
     {
     
         private readonly IParticipantsRepository _participant;
-        private readonly BlockCovidContext _blockCovid;
         private readonly IMapper _mapper;
 
 
-        public ParticipantsController(IParticipantsRepository participant, BlockCovidContext blockCovid, IMapper mapper)
+        public ParticipantsController(IParticipantsRepository participant, IMapper mapper)
         {
             _participant = participant;
-            _blockCovid = blockCovid;
+           // _blockCovid = blockCovid;
             _mapper = mapper;
         }
 
@@ -42,7 +36,7 @@ namespace BlockCovid.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ParticipantDto>>> GetParticipants()
         {
-            return await _blockCovid.Participants.Select(x => _mapper.Map<ParticipantDto>(x)).ToListAsync();
+            return await _participant.GetParticipantsAsync();
         }
 
         // GET: api/Participants/5
@@ -87,8 +81,7 @@ namespace BlockCovid.Controllers
 
             try
             {
-                _blockCovid.Participants.Add(participant);
-                await _blockCovid.SaveChangesAsync();
+               await _participant.CreateParticipantsAsync(participant);
             }
             catch (DbUpdateException exception)
             {
@@ -112,10 +105,7 @@ namespace BlockCovid.Controllers
                 return BadRequest(ModelState);
             }
 
-            Participant participant = 
-                await _blockCovid.Participants
-                .Where(participant => participant.Login == participantConnexionDto.Login)
-                .FirstOrDefaultAsync();
+            Participant participant = await _participant.GetParticipantByLoginAsync(participantConnexionDto.Login);
 
             if (participant == null)
             {

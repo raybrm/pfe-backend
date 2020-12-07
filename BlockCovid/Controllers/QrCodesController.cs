@@ -91,5 +91,11 @@ namespace BlockCovid.Controllers
         {
             return _context.QrCode.Any(e => e.QrCodeID == id);
         }
+
+        [HttpPost("scanQrCode")]
+        public async Task<IActionResult> scanQrCode(ScanQrCodeDto scanQrCodeDto)
+        {
+            return Ok();
+        }
     }
 }

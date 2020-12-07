@@ -156,11 +156,6 @@ namespace BlockCovid.Dal.Repositories
             CitizenDto cDto = (from Citizen c in _context.Citizens
                                                         where c.TokenFireBase == citizenDto.TokenFireBase
                                      select _mapper.Map<CitizenDto>(c)).FirstOrDefault();
-            if( cDto== null)
-            {
-                
-                return null;
-            }
            
             return Task.FromResult(cDto);
         }

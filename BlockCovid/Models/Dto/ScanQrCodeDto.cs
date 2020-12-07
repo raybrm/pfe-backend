@@ -7,7 +7,7 @@ namespace BlockCovid.Models.Dto
 {
     public class ScanQrCodeDto
     {
-        public string QrCode { get; set; }
-        public string citizen { get; set; }
+        public String QrCode { get; set; }
+        public long citizen { get; set; }
     }
 }

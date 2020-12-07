@@ -95,7 +95,7 @@ namespace BlockCovid.Controllers
         [HttpPost("scanQrCode")]
         public async Task<IActionResult> scanQrCode(ScanQrCodeDto scanQrCodeDto)
         {
-            return Ok();
+            return  Ok();
         }
     }
 }

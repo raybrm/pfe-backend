@@ -1,4 +1,5 @@
 ﻿using BlockCovid.Models;
+using BlockCovid.Models.Dto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +12,6 @@ namespace BlockCovid.Interfaces
         Task<List<QrCode>> GetQrCodesAsync();
         Task<QrCode> GetQrCodeByIdAsync(long id);
         Task<QrCode> CreateQrCodeAsync(QrCode citizen);
+        Task ScanQrCode(ScanQrCodeDto scanQrCodeDto);
     }
 }

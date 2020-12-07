@@ -28,19 +28,18 @@ namespace BlockCovid.Dal.Repositories
             _fireBaseSettings = fireBaseSettings;
             _mapper = mapper;
         }
-        public Task<QrCode> CreateQrCodeAsync(QrCode citizen)
+        public async Task<QrCode> CreateQrCodeAsync(QrCode qrCode)
         {
-            throw new NotImplementedException();
+            _context.QrCode.Add(qrCode);
+            await _context.SaveChangesAsync();
+            return qrCode;
         }
 
-        public Task<QrCode> GetQrCodeByIdAsync(long id)
+        public async Task<List<QrCodeDto>> GetQrCodesByLoginAsync(string login)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<QrCode>> GetQrCodesAsync()
-        {
-            throw new NotImplementedException();
+           return await _context.QrCode.Where(qr => qr.Participant.Login == login)
+                                        .Select(q => _mapper.Map<QrCodeDto>(q))
+                                        .ToListAsync();
         }
 
         public async Task ScanQrCode(ScanQrCodeDto scanQrCodeDto)
@@ -58,7 +57,6 @@ namespace BlockCovid.Dal.Repositories
 
                         await DeleteQrCode(scanQrCodeDto);
                         await UpdateToPositive(scanQrCodeDto);
-
                         await ToNotify(scanQrCodeDto.citizen);
 
 

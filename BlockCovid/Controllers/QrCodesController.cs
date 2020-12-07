@@ -74,9 +74,10 @@ namespace BlockCovid.Controllers
             {
                 return BadRequest();
             }
-
+            System.Diagnostics.Debug.WriteLine("AAAAAAAAAAAAAAAAAAAAAAAA");
+            System.Diagnostics.Debug.WriteLine(_context.Entry(qrCode).State);
             _context.Entry(qrCode).State = EntityState.Modified;
-
+           
             try
             {
                 await _context.SaveChangesAsync();

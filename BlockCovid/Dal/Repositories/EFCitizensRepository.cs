@@ -48,33 +48,52 @@ namespace BlockCovid.Dal.Repositories
         }
 
 
-
-        public void ToNotify(long id)
+        public async Task ToNotify(long id)
         {
-              IQueryable<CitizenQrCodeDto> listCustomer = from CitizenQrCode c in _context.CitizenQrCode
-                                                          where c.CitizenId==id                                                      
-                                                          select _mapper.Map<CitizenQrCodeDto>(c) ;
 
-              foreach(CitizenQrCodeDto citizenQrCode in listCustomer)
+
+             IQueryable<CitizenQrCodeDto> listCustomer = await Task.Run(() =>from CitizenQrCode c in _context.CitizenQrCode
+                                                          where c.CitizenId==id                                                      
+                                                          select _mapper.Map<CitizenQrCodeDto>(c)) ;
+            await listCustomer.ForEachAsync(async citizenQrCode =>
+             {
+                 DateTime datePlusUneHeure = citizenQrCode.Timestamp.AddHours(1);
+
+                 //   c.QrCodeId == citizenQrCode.QrCodeId
+                 IQueryable<CitizenDto> listCitizenDtoToNotify = await Task.Run(() => from CitizenQrCode citizenQr in _context.CitizenQrCode
+                                                                 from Citizen citizen in _context.CitizenQrCode
+                                                                 where citizenQr.QrCodeId == citizenQrCode.QrCodeId
+                                                                 && citizenQr.Timestamp <= datePlusUneHeure
+                                                                 //&& citizen.Is_Positive==false
+                                                                 select _mapper.Map<CitizenDto>(citizen));
+                 await listCitizenDtoToNotify.ForEachAsync(async c =>
+                 {
+
+                     await Task.Run(() => NotifyFilters(c.TokenFireBase));
+
+                 });
+
+             });
+             /* foreach (CitizenQrCodeDto citizenQrCode in listCustomer)
               {
 
                   System.Diagnostics.Debug.WriteLine(citizenQrCode.Timestamp+" "+citizenQrCode.CitizenQrCodeId);
 
                   DateTime datePlusUneHeure = citizenQrCode.Timestamp.AddHours(1);
-                  DateTime dateMoinsUneHeure = citizenQrCode.Timestamp.AddHours(-1);
+                
              //   c.QrCodeId == citizenQrCode.QrCodeId
                   IQueryable<CitizenDto> listCitizenDtoToNotify = from CitizenQrCode citizenQr in _context.CitizenQrCode
                                                                         from Citizen citizen in _context.CitizenQrCode
                                                                         where citizenQr.QrCodeId==citizenQrCode.QrCodeId
-                                                                        && citizenQr.Timestamp >= dateMoinsUneHeure && citizenQr.Timestamp<=datePlusUneHeure
-                                                                        && citizen.Is_Positive==false
+                                                                        && citizenQr.Timestamp<=datePlusUneHeure
+                                                                        //&& citizen.Is_Positive==false
                                                                         select _mapper.Map<CitizenDto>(citizen);
                 foreach(CitizenDto citizenToNotify in listCitizenDtoToNotify)
                 {
                     NotifyFilters(citizenToNotify.TokenFireBase);
                 }
 
-            }
+            }*/
         }
 
         public void NotifyFilters(string token)

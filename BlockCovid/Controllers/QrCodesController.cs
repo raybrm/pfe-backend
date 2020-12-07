@@ -59,40 +59,7 @@ namespace BlockCovid.Controllers
         }
         */
 
-<<<<<<< HEAD
-        // PUT: api/QrCodes/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutQrCode(long id, QrCode qrCode)
-        {
-            if (id != qrCode.QrCodeID)
-            {
-                return BadRequest();
-            }
-            System.Diagnostics.Debug.WriteLine("AAAAAAAAAAAAAAAAAAAAAAAA");
-            System.Diagnostics.Debug.WriteLine(_context.Entry(qrCode).State);
-            _context.Entry(qrCode).State = EntityState.Modified;
-           
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!QrCodeExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
 
-            return NoContent();
-        }
-=======
->>>>>>> feebd32d04f4b6bb251dba26e057ca3e7e4af834
 
         // POST: api/QrCodes
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754

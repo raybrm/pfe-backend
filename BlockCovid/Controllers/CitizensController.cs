@@ -34,7 +34,7 @@ namespace BlockCovid.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<CitizenDto>> GetCitizen(long id)
         {
-            _citizen.ToNotify(id);
+           // _citizen.ToNotify(id);
            var citizen = await _citizen.GetCitizenByIdAsync(id);
 
             if (citizen == null)

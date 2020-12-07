@@ -34,7 +34,7 @@ namespace BlockCovid.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<CitizenDto>> GetCitizen(long id)
         {
-            _citizen.ToNotify(id);
+            
            var citizen = await _citizen.GetCitizenByIdAsync(id);
 
             if (citizen == null)
@@ -59,7 +59,9 @@ namespace BlockCovid.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<CitizenDto>> RegisterCitizen(CitizenDto citizenDto)
         {
+            System.Diagnostics.Debug.WriteLine(citizenDto.First_Name);
             CitizenDto cDto = await _citizen.IfCitizenInDbAsync(citizenDto);
+            System.Diagnostics.Debug.WriteLine(citizenDto.First_Name);
             if (cDto == null)
             {
                 var citizen = _mapper.Map<Citizen>(citizenDto);

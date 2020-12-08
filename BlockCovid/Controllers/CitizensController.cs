@@ -77,7 +77,11 @@ namespace BlockCovid.Controllers
         public async Task<ActionResult<CitizenDto>> LoginCitizen(CitizenDto citizenDto)
         {
             CitizenDto cDto= await _citizen.IfCitizenInDbAsync(citizenDto);
-            return Ok(cDto);
+            if (cDto == null)
+            {
+                return NotFound();
+            }
+            return cDto;
 
         }
 
@@ -94,9 +98,17 @@ namespace BlockCovid.Controllers
             {
                 var citizen = _mapper.Map<Citizen>(citizenDto);
 
-
-                var citizenToReturn = await _citizen.CreateCitizensAsync(citizen);
-                return CreatedAtAction("GetCitizen", new { id = citizen.CitizenID }, _mapper.Map<CitizenDto>(citizenToReturn));
+                try
+                {
+                    var citizenToReturn = await _citizen.CreateCitizensAsync(citizen);
+                    return CreatedAtAction("GetCitizen", new { id = citizen.CitizenID }, _mapper.Map<CitizenDto>(citizenToReturn));
+                }
+                catch (DbUpdateException)
+                {
+                    return Conflict(new { message = "The citizen already exist" });
+                }
+               
+               
             }
 
             return cDto;

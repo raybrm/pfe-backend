@@ -14,6 +14,7 @@ using System.Security.Claims;
 using BlockCovid.Models.Dto;
 using BlockCovid.Interfaces;
 using AutoMapper;
+using System.Data.Common;
 
 namespace BlockCovid.Controllers
 {
@@ -97,11 +98,30 @@ namespace BlockCovid.Controllers
         /// Scan qrCode et envoie une notif au personne ayant eu un contact avec la personne +
         /// </summary>
         /// <response code="200">Notif envoyée</response>
+        /// <response code="400"> le QR code n'existe pas ou le citizen n'existe pas</response> 
         [HttpPost("scanQrCode")]
         public async Task<IActionResult> scanQrCode(ScanQrCodeDto scanQrCodeDto)
         {
-            await _qrCodesRepository.ScanQrCode(scanQrCodeDto);
-            return  Ok(); // TODO : à changer
+          
+           
+            if (_qrCodesRepository.QrCodeExists(scanQrCodeDto.QrCode) == false )
+            {
+                return BadRequest(new { message = "qrCode doesn't exist" });
+            }
+            if (_qrCodesRepository.CitizenExists(scanQrCodeDto.citizen) == false)
+            {
+                return BadRequest(new { message = "Citizen doesn't exist" });
+            }
+
+            try {
+
+                 await _qrCodesRepository.ScanQrCode(scanQrCodeDto);
+                }
+            catch (DbException Exception)
+            {
+                return BadRequest(new { message = "erreur interne" });
+            }
+            return  Ok(scanQrCodeDto); // TODO : à changer
         }
     }
 }

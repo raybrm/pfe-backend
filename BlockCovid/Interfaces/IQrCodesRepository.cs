@@ -12,5 +12,7 @@ namespace BlockCovid.Interfaces
         Task<List<QrCodeDto>> GetQrCodesByLoginAsync(string login);
         Task<QrCode> CreateQrCodeAsync(QrCode qrCode);
         Task ScanQrCode(ScanQrCodeDto scanQrCodeDto);
+        bool QrCodeExists(String id);
+        bool CitizenExists(long id);
     }
 }

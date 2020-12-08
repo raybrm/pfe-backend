@@ -46,17 +46,21 @@ namespace BlockCovid.Dal.Repositories
             return _context.QrCode.Any(e => e.QrCodeID == id);
         }
 
+        public bool CitizenExists(long id)
+        {
+            return _context.Citizens.Any(e => e.CitizenID == id);
+        }
+
         public async Task ScanQrCode(ScanQrCodeDto scanQrCodeDto)
         {
         
             await using var transaction = await _context.Database.BeginTransactionAsync();
-
+          
             try
             {
-                if (QrCodeExists(scanQrCodeDto.QrCode))
-                {
-                    QrCode qrCode = await _context.QrCode.Include(qr => qr.Participant).FirstOrDefaultAsync(x => x.QrCodeID == (scanQrCodeDto.QrCode));
 
+                    QrCode qrCode = await _context.QrCode.Include(qr => qr.Participant).FirstOrDefaultAsync(x => x.QrCodeID == (scanQrCodeDto.QrCode));
+                    
                     ParticipantType participantType = qrCode.Participant.Participant_Type;
 
                     switch (participantType)
@@ -83,14 +87,17 @@ namespace BlockCovid.Dal.Repositories
                     await _context.SaveChangesAsync();
 
                     await transaction.CommitAsync();
-                }
+              
+ 
             }
-            catch (Exception)
+            catch (Exception exc)
             {
-           
-                await transaction.RollbackToSavepointAsync("Erreur en db, rollback réalisé");
-
+                await transaction.RollbackAsync();
+                throw new Exception(exc.Message);
+               
             }
+          
+            
    
         }
 
@@ -121,7 +128,7 @@ namespace BlockCovid.Dal.Repositories
         {
             QrCode qrCode = await _context.QrCode.FindAsync(scanQrCodeDto.QrCode);
           
-          _context.QrCode.Remove(qrCode);
+           _context.QrCode.Remove(qrCode);
            await _context.SaveChangesAsync();
 
         }
@@ -209,9 +216,9 @@ namespace BlockCovid.Dal.Repositories
                 dataStream.Close();
                 tResponse.Close();
             }
-            catch (Exception)
+            catch (Exception exc)
             {
-                throw;
+                throw new Exception(exc.Message);
             }
 
         }

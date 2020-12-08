@@ -3,7 +3,7 @@ using BlockCovid.ConfigurationSettings;
 using BlockCovid.Dal;
 using BlockCovid.Dal.Repositories;
 using BlockCovid.Interfaces;
-using BlockCovid.Services;
+using BlockCovid.Utils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

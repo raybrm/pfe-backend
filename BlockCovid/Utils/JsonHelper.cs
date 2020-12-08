@@ -3,7 +3,7 @@ using System.Runtime.Serialization.Json;
 using System.IO;
 using System.Text;
 
-namespace BlockCovid.Services
+namespace BlockCovid.Utils
 {
     public class JsonHelper
     {

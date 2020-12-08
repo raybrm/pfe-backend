@@ -6,7 +6,7 @@ using AutoMapper;
 using BlockCovid.Models;
 using BlockCovid.Models.Dto;
 
-namespace BlockCovid.Services
+namespace BlockCovid.Utils
 {
     public class ServiceMap : Profile
     {

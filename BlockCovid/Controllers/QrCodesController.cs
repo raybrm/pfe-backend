@@ -35,12 +35,12 @@ namespace BlockCovid.Controllers
 
 
         /// <summary>
-        /// Permet de recup un qrCode
+        /// Permet de recupérer la liste des QrCodes de l'utilisateur ayant le role "Establishment"
         /// </summary>
-        /// <response code="200">Participant enregistré</response>
+        /// <response code="200">La liste à bien été envoyé même si elle est vide</response>
         /// <response code="401">Si l'utilisateur n'est pas autorisé à appeler la méthode</response>  
         // GET: api/QrCodes
-        [Authorize(Roles = "Establishment")]  // valide token
+        [Authorize(Roles = "Establishment")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<QrCodeDto>>> GetQrCode()
         {
@@ -48,7 +48,6 @@ namespace BlockCovid.Controllers
             var identity = HttpContext.User.Identity as ClaimsIdentity;
             string login = identity.FindFirst("login").Value;
            
-
             return await _qrCodesRepository.GetQrCodesByLoginAsync(login);
         }
 
@@ -57,7 +56,7 @@ namespace BlockCovid.Controllers
         /// Permet d'enregistrer un QrCode
         /// </summary> 
         /// <response code="201">Qrcode enregistré</response>
-        /// <response code="400">Si le qrCode recu ne respecte pas model de QrCodeDto ou le particpant dans le token ne se trouve pas en db</response> 
+        /// <response code="400">Si le qrCode recu ne respecte pas le model de QrCodeDto ou le particpant dans le token ne se trouve pas en db</response> 
         /// <response code="401">Si l'utilisateur n'est pas autorisé à appeler la méthode</response>  
         // POST: api/QrCodes
         [HttpPost]
@@ -68,7 +67,7 @@ namespace BlockCovid.Controllers
             {
                 return BadRequest(ModelState);
             }
-
+            // Get le login dans le token
             var identity = HttpContext.User.Identity as ClaimsIdentity;
             string login = identity.FindFirst("login").Value;
 

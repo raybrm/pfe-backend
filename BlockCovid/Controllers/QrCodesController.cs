@@ -34,7 +34,11 @@ namespace BlockCovid.Controllers
         }
 
 
-
+        /// <summary>
+        /// Permet de recup un qrCode
+        /// </summary>
+        /// <response code="200">Participant enregistré</response>
+        /// <response code="401">Si l'utilisateur n'est pas autorisé à appeler la méthode</response>  
         // GET: api/QrCodes
         [Authorize(Roles = "Establishment")]  // valide token
         [HttpGet]
@@ -49,6 +53,12 @@ namespace BlockCovid.Controllers
         }
 
 
+        /// <summary>
+        /// Permet d'enregistrer un QrCode
+        /// </summary> 
+        /// <response code="201">Qrcode enregistré</response>
+        /// <response code="400">Si le qrCode recu ne respecte pas model de QrCodeDto ou le particpant dans le token ne se trouve pas en db</response> 
+        /// <response code="401">Si l'utilisateur n'est pas autorisé à appeler la méthode</response>  
         // POST: api/QrCodes
         [HttpPost]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -84,6 +94,10 @@ namespace BlockCovid.Controllers
             return CreatedAtAction("GetQrCode", new { id = qrCode.QrCodeID }, qrCodeDto);
         }
 
+        /// <summary>
+        /// Scan qrCode et envoie une notif au personne ayant eu un contact avec la personne +
+        /// </summary>
+        /// <response code="200">Notif envoyée</response>
         [HttpPost("scanQrCode")]
         public async Task<IActionResult> scanQrCode(ScanQrCodeDto scanQrCodeDto)
         {

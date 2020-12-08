@@ -73,7 +73,7 @@ namespace BlockCovid.Controllers
         /// <summary>
         /// Permet d'enregistrer un participant
         /// </summary>
-        /// <response code="200">Participant enregistrer</response>
+        /// <response code="200">Participant enregistré</response>
         /// <response code="400">Si l'utilisateur ne respecte pas model ParticipantDto</response>  
         /// <response code="409">Si login est déjà utilisé</response>  
         /// <response code="412">Si mdp est différent du champ confirmé mdp</response>  
@@ -122,7 +122,7 @@ namespace BlockCovid.Controllers
         /// <summary>
         /// Permet de se connecter
         /// </summary>
-        /// <response code="200">Connecter</response>
+        /// <response code="200">Connecté</response>
         /// <response code="400">Si l'utilisateur ne respecte pas model ParticipantConnexionDto, ou bien que mail ou mdp est mauvais</response>  
         // POST: api/Participants/login
         [HttpPost("login")]
@@ -157,7 +157,7 @@ namespace BlockCovid.Controllers
         /// <summary>
         /// Permet de renvoyer le role du participant
         /// </summary>
-        /// <response code="200">Role renvoyer</response>
+        /// <response code="200">Role renvoyé</response>
         //api/Participants/verification
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet("verification")]

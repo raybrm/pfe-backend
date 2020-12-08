@@ -143,7 +143,8 @@ namespace BlockCovid.Dal.Repositories
                     IQueryable<CitizenDto> listCitizenDtoToNotify = (from CitizenQrCode citizenQr in _context.CitizenQrCode.Include(ct => ct.Citizen)
 
                                                                     where citizenQr.QrCodeId == citizenQrCode.QrCodeId
-                                                                    && citizenQrCode.Timestamp.Subtract(citizenQr.Timestamp).Days<=10 && citizenQrCode.Timestamp<= citizenQr.Timestamp && citizenQr.Timestamp <= datePlusUneHeure
+                                                                    && ((citizenQrCode.Timestamp.Subtract(citizenQr.Timestamp).Days<=10) || (citizenQr.Timestamp.Subtract(citizenQrCode.Timestamp).Days <= 10)) //permet de voir si ils se sont croisés il y a plus de 10 jours
+                                                                    && citizenQrCode.Timestamp<= citizenQr.Timestamp && citizenQr.Timestamp <= datePlusUneHeure
                                                                     && citizenQr.Citizen.Is_Positive==false
                                                                     select _mapper.Map<CitizenDto>(citizenQr.Citizen)).Distinct();
 

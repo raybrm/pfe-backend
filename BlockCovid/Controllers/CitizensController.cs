@@ -27,9 +27,13 @@ namespace BlockCovid.Controllers
             _citizen = citizen;
             _mapper = mapper;
         }
-       
-        
 
+
+        /// <summary>
+        /// Retourne un citizen specifique à partir de son id
+        /// </summary>
+        /// <response code="200">Returns the citizen</response>
+        /// <response code="404">Si le citizen est pas trouvé</response> 
         // GET: api/Citizens/5
         [HttpGet("{id}")]
         public async Task<ActionResult<CitizenDto>> GetCitizen(long id)
@@ -42,20 +46,28 @@ namespace BlockCovid.Controllers
                 return NotFound();
             }
 
-            return _mapper.Map<CitizenDto>(citizen);
+            return Ok(_mapper.Map<CitizenDto>(citizen));
         }
 
+        /// <summary>
+        /// Permet de se connecter en lui donnant un login et mdp
+        /// </summary>
+        /// <response code="200">Returns the newly created citizen </response>
         // POST: api/Citizens
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost("login")]
         public async Task<ActionResult<CitizenDto>> LoginCitizen(CitizenDto citizenDto)
         {
             CitizenDto cDto= await _citizen.IfCitizenInDbAsync(citizenDto);
-            return cDto ;
- 
+            return Ok(cDto);
+
         }
 
-
+        /// <summary>
+        /// Permet de créer un citizen
+        /// </summary>
+        /// <response code="201">Returns the newly created citizen </response>
+        /// <response code="400">Si citizen est null</response>  
         [HttpPost("register")]
         public async Task<ActionResult<CitizenDto>> RegisterCitizen(CitizenDto citizenDto)
         {

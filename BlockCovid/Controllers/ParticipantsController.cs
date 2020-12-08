@@ -16,6 +16,7 @@ using System.Text;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http;
 
 namespace BlockCovid.Controllers
 {
@@ -38,6 +39,10 @@ namespace BlockCovid.Controllers
             _jwtSettings = jwtSettings;
         }
 
+        /// <summary>
+        /// Permet de recuperer tous les participants
+        /// </summary>
+        /// <response code="200">Recup la liste de tous les participants </response>
         // GET: api/Participants
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ParticipantDto>>> GetParticipants()
@@ -45,6 +50,11 @@ namespace BlockCovid.Controllers
             return await _participant.GetParticipantsAsync();
         }
 
+        /// <summary>
+        /// Recup un participant en donnant un id
+        /// </summary>
+        /// <response code="200">Retourne le participant </response>
+        /// <response code="404">Si le participant n'existe pas</response>  
         // GET: api/Participants/5
         [HttpGet("{id}")]
         public async Task<ActionResult<ParticipantDto>> GetParticipant(long id)
@@ -60,6 +70,13 @@ namespace BlockCovid.Controllers
             return participantDto;
         }
 
+        /// <summary>
+        /// Permet d'enregistrer un participant
+        /// </summary>
+        /// <response code="200">Participant enregistrer</response>
+        /// <response code="400">Si l'utilisateur ne respecte pas model ParticipantDto</response>  
+        /// <response code="409">Si login est déjà utilisé</response>  
+        /// <response code="412">Si mdp est différent du champ confirmé mdp</response>  
         // POST: api/Participants
         [HttpPost("register")]
         public async Task<ActionResult<ParticipantDto>> PostParticipant(ParticipantDto participantDTO)
@@ -102,6 +119,11 @@ namespace BlockCovid.Controllers
 
         }
 
+        /// <summary>
+        /// Permet de se connecter
+        /// </summary>
+        /// <response code="200">Connecter</response>
+        /// <response code="400">Si l'utilisateur ne respecte pas model ParticipantConnexionDto, ou bien que mail ou mdp est mauvais</response>  
         // POST: api/Participants/login
         [HttpPost("login")]
         public async Task<ActionResult<ParticipantConnexionDto>> Login(ParticipantConnexionDto participantConnexionDto)
@@ -132,6 +154,10 @@ namespace BlockCovid.Controllers
             return Ok(new JwtSecurityTokenHandler().WriteToken(tokenJWT));
         }
 
+        /// <summary>
+        /// Permet de renvoyer le role du participant
+        /// </summary>
+        /// <response code="200">Role renvoyer</response>
         //api/Participants/verification
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet("verification")]

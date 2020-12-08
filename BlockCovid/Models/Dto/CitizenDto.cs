@@ -13,9 +13,7 @@ namespace BlockCovid.Models.Dto
         public long CitizenID { get; set; }
         public string First_Name { get; set; }
         public string Last_Name { get; set; }
-        [Required]
         public string TokenFireBase { get; set; }
-        [Required]
         public bool Is_Positive { get; set; }
     }
 }

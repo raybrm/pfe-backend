@@ -13,6 +13,6 @@ namespace BlockCovid.Interfaces
         Task<Citizen> GetCitizenByIdAsync(long id);
         Task<Citizen> CreateCitizensAsync(Citizen citizen);
         Task<CitizenDto> IfCitizenInDbAsync(CitizenDto citizenDto);
-    
+        Task<CitizenDto> UpdateCitizen(CitizenDto citizenDto);
     }
 }

@@ -48,6 +48,19 @@ namespace BlockCovid.Controllers
 
             return Ok(_mapper.Map<CitizenDto>(citizen));
         }
+        /// <summary>
+        /// Permet de mettre à jour un citizen
+        /// </summary>
+        /// <response code="201">Returns the updated citizen</response>
+        /// <response code="404">Si le citizen est pas trouvé</response>  
+        [HttpPut]
+        public async Task<ActionResult<CitizenDto>> UpdateCitizen(CitizenDto citizenDto)
+        {
+            
+            CitizenDto cDto = await _citizen.UpdateCitizen(citizenDto);
+            return Ok(cDto);
+
+        }
 
         /// <summary>
         /// Permet de se connecter en lui donnant un login et mdp

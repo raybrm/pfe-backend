@@ -9,7 +9,7 @@ using BlockCovid.Models.Dto;
 using AutoMapper;
 using Microsoft.AspNetCore.Cors;
 using System.IdentityModel.Tokens.Jwt;
-using BlockCovid.Services;
+using BlockCovid.Utils;
 using System;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;

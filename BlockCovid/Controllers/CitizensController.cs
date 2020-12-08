@@ -58,6 +58,11 @@ namespace BlockCovid.Controllers
         {
             
             CitizenDto cDto = await _citizen.UpdateCitizen(citizenDto);
+
+            if (cDto == null)
+            {
+                return NotFound();
+            }
             return Ok(cDto);
 
         }

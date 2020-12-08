@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BlockCovid.Utils;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -8,7 +9,7 @@ namespace BlockCovid.Models.Dto
 {
     public class ParticipantDto
     {
-        [EmailAddress]
+        [ValidEmailAdress]
         [Required]
         public string Login { get; set; }
         [Required]

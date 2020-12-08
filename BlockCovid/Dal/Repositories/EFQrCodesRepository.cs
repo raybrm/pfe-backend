@@ -67,7 +67,7 @@ namespace BlockCovid.Dal.Repositories
                     {
                         case ParticipantType.Doctor:
 
-                           // await DeleteQrCode(scanQrCodeDto);
+                            await DeleteQrCode(scanQrCodeDto);
                             await UpdateToPositive(scanQrCodeDto);
                             await ToNotify(scanQrCodeDto.citizen);
 
@@ -146,7 +146,7 @@ namespace BlockCovid.Dal.Repositories
                await listCustomer.ForEachAsync(action: citizenQrCode =>
                 {
                     
-                    int jourCompare = (DateTime.Now.Subtract(citizenQrCode.Timestamp).Days);
+                    int jourCompare = Math.Abs((DateTime.Now.Subtract(citizenQrCode.Timestamp).Days));
 
                     DateTime datePlusUneHeure = citizenQrCode.Timestamp.AddHours(1);
                     IQueryable<Citizen> listCitizenDtoToNotify = (from CitizenQrCode citizenQr in _context.CitizenQrCode.Include(ct => ct.Citizen)

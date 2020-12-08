@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace BlockCovid.Models
 {
-    public class ComparateurCitizens : IEqualityComparer<CitizenDto>
+    public class ComparateurCitizens : IEqualityComparer<Citizen>
     {
-        public bool Equals(CitizenDto x, CitizenDto y)
+        public bool Equals(Citizen x, Citizen y)
         {
             return x.CitizenID==y.CitizenID;
         }
 
-        public int GetHashCode([DisallowNull] CitizenDto obj)
+        public int GetHashCode([DisallowNull] Citizen obj)
         {
             return obj.CitizenID.GetHashCode();
         }

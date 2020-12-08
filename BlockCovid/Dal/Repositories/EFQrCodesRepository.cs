@@ -67,7 +67,7 @@ namespace BlockCovid.Dal.Repositories
                     {
                         case ParticipantType.Doctor:
 
-                            await DeleteQrCode(scanQrCodeDto);
+                           // await DeleteQrCode(scanQrCodeDto);
                             await UpdateToPositive(scanQrCodeDto);
                             await ToNotify(scanQrCodeDto.citizen);
 
@@ -136,7 +136,7 @@ namespace BlockCovid.Dal.Repositories
         private async Task ToNotify(long id)
         {
 
-            HashSet < CitizenDto > ensembleCitizenDto= new HashSet<CitizenDto>(new ComparateurCitizens());
+            HashSet < Citizen > ensembleCitizenDto= new HashSet<Citizen>(new ComparateurCitizens());
 
             IQueryable<CitizenQrCodeDto> listCustomer = await Task.Run(() => from CitizenQrCode c in _context.CitizenQrCode
                                                                              where c.CitizenId == id
@@ -145,17 +145,19 @@ namespace BlockCovid.Dal.Repositories
             await Task.Run(async () =>
                await listCustomer.ForEachAsync(action: citizenQrCode =>
                 {
-     
+                    
+                    int jourCompare = (DateTime.Now.Subtract(citizenQrCode.Timestamp).Days);
+
                     DateTime datePlusUneHeure = citizenQrCode.Timestamp.AddHours(1);
-                    IQueryable<CitizenDto> listCitizenDtoToNotify = (from CitizenQrCode citizenQr in _context.CitizenQrCode.Include(ct => ct.Citizen)
+                    IQueryable<Citizen> listCitizenDtoToNotify = (from CitizenQrCode citizenQr in _context.CitizenQrCode.Include(ct => ct.Citizen)
 
                                                                     where citizenQr.QrCodeId == citizenQrCode.QrCodeId
-                                                                    && (DateTime.Now.Subtract(citizenQrCode.Timestamp).Days <= 10) //permet de voir si ils se sont croisés il y a plus de 10 jours
+                                                                    && (jourCompare <= 10) //permet de voir si ils se sont croisés il y a plus de 10 jours
                                                                     && citizenQrCode.Timestamp<= citizenQr.Timestamp && citizenQr.Timestamp <= datePlusUneHeure
                                                                     && citizenQr.Citizen.Is_Positive==false
-                                                                    select _mapper.Map<CitizenDto>(citizenQr.Citizen)).Distinct();
+                                                                    select citizenQr.Citizen).Distinct();
 
-                    foreach (CitizenDto c in listCitizenDtoToNotify)
+                    foreach (Citizen c in listCitizenDtoToNotify)
                     {
                         if (!ensembleCitizenDto.Contains(c))
                         {
@@ -170,11 +172,12 @@ namespace BlockCovid.Dal.Repositories
 
         public void NotifyFilters(string token)
         {
-           
+            System.Diagnostics.Debug.WriteLine(token);
             try
             {
                 dynamic data = new
                 {
+                 
                     to = token, // Uncoment this if you want to test for single device
                                 // registration_ids = singlebatch, // this is for multiple user 
                     notification = new
@@ -218,7 +221,7 @@ namespace BlockCovid.Dal.Repositories
             }
             catch (Exception exc)
             {
-                throw new Exception(exc.Message);
+                throw new Exception("notify exception");
             }
 
         }

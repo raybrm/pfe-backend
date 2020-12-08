@@ -69,7 +69,11 @@ namespace BlockCovid
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "BlockCovid", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { 
+                    Title = "BlockCovid",
+                    Version = "v1",
+                    Description = "Projet fin d'étude avec ASP.NET Core Web API"
+                });
                 // Set the comments path for the Swagger JSON and UI.
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
@@ -79,7 +83,7 @@ namespace BlockCovid
             services.AddDbContext<BlockCovidContext>(opts =>
             {
                 opts.UseSqlServer(
-                    Configuration["ConnectionStrings:BlockCovidConnection"]);
+                    Configuration["ConnectionStrings:BlockCovidConnection"]).EnableSensitiveDataLogging();
             });
             services.AddScoped<ICitizensRepository, EFCitizensRepository>();
             services.AddScoped<IParticipantsRepository, EFParticipantsRepository>();

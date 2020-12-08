@@ -56,14 +56,23 @@ namespace BlockCovid.Controllers
         [HttpPut]
         public async Task<ActionResult<CitizenDto>> UpdateCitizen(CitizenDto citizenDto)
         {
-            
-            CitizenDto cDto = await _citizen.UpdateCitizen(citizenDto);
+            CitizenDto citizen= await _citizen.IfCitizenInDbAsync(citizenDto);
 
-            if (cDto == null)
+            if (citizen == null)
             {
                 return NotFound();
             }
-            return Ok(cDto);
+           
+            try
+            {
+                CitizenDto cDto = await _citizen.UpdateCitizen(citizenDto);
+            }
+            
+            catch (DbUpdateException)
+            {
+                return BadRequest(new { message = "erreur interne" });
+            }
+            return Ok(citizenDto);
 
         }
 

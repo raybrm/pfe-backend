@@ -90,6 +90,17 @@ namespace BlockCovid.Controllers
             {
                 return NotFound();
             }
+
+            
+            try
+            {
+                cDto = await _citizen.UpdateCitizenToken(citizenDto);
+            }
+            
+            catch (DbUpdateException)
+            {
+                return BadRequest(new { message = "erreur interne" });
+            }
             return cDto;
 
         }

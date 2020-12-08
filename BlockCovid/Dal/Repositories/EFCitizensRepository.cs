@@ -55,7 +55,15 @@ namespace BlockCovid.Dal.Repositories
            
             return Task.FromResult(cDto);
         }
-
+        public async Task<CitizenDto> UpdateCitizenToken(CitizenDto citizenDto)
+        {
+            Citizen citizen = (from Citizen c in _context.Citizens
+                               where c.CitizenID == citizenDto.CitizenID
+                               select c).SingleOrDefault();
+            citizen.TokenFireBase = citizenDto.TokenFireBase;
+            await _context.SaveChangesAsync();
+            return citizenDto;
+        }
         public async  Task<CitizenDto> UpdateCitizen(CitizenDto citizenDto)
         {
             Citizen citizen = (from Citizen c in _context.Citizens
@@ -63,6 +71,7 @@ namespace BlockCovid.Dal.Repositories
                                select c).SingleOrDefault();
             citizen.First_Name = citizenDto.First_Name;
             citizen.Last_Name = citizenDto.Last_Name;
+            citizen.TokenFireBase = citizenDto.TokenFireBase;
             await _context.SaveChangesAsync();
             return citizenDto;
         }

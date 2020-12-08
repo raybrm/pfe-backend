@@ -89,7 +89,7 @@ namespace BlockCovid.Controllers
             {
                await _participant.CreateParticipantsAsync(participant);
             }
-            catch (DbUpdateException exception)
+            catch (DbUpdateException)
             {
                 return Conflict(new { message = "The login already exist" });
             }

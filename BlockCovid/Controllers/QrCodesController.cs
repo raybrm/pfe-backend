@@ -76,7 +76,7 @@ namespace BlockCovid.Controllers
             try
             {
                 await _qrCodesRepository.CreateQrCodeAsync(qrCode);
-            } catch(DbUpdateException exception)
+            } catch(DbUpdateException)
             {
                 return BadRequest(new {message = "The id already exist" });
             }
@@ -88,7 +88,7 @@ namespace BlockCovid.Controllers
         public async Task<IActionResult> scanQrCode(ScanQrCodeDto scanQrCodeDto)
         {
             await _qrCodesRepository.ScanQrCode(scanQrCodeDto);
-            return  Ok();
+            return  Ok(); // TODO : à changer
         }
     }
 }

@@ -73,7 +73,7 @@ namespace BlockCovid
             services.AddDbContext<BlockCovidContext>(opts =>
             {
                 opts.UseSqlServer(
-                    Configuration["ConnectionStrings:BlockCovidConnection"]);
+                    Configuration["ConnectionStrings:BlockCovidConnection"]).EnableSensitiveDataLogging();
             });
             services.AddScoped<ICitizensRepository, EFCitizensRepository>();
             services.AddScoped<IParticipantsRepository, EFParticipantsRepository>();

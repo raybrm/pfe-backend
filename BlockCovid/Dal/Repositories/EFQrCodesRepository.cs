@@ -138,12 +138,12 @@ namespace BlockCovid.Dal.Repositories
             await Task.Run(async () =>
                await listCustomer.ForEachAsync(action: citizenQrCode =>
                 {
-                    DateTime dateMoins10Jours = citizenQrCode.Timestamp.AddHours(-240);
+     
                     DateTime datePlusUneHeure = citizenQrCode.Timestamp.AddHours(1);
                     IQueryable<CitizenDto> listCitizenDtoToNotify = (from CitizenQrCode citizenQr in _context.CitizenQrCode.Include(ct => ct.Citizen)
 
                                                                     where citizenQr.QrCodeId == citizenQrCode.QrCodeId
-                                                                    && dateMoins10Jours < citizenQr.Timestamp && citizenQrCode.Timestamp<= citizenQr.Timestamp &&    citizenQr.Timestamp <= datePlusUneHeure
+                                                                    && citizenQrCode.Timestamp.Subtract(citizenQr.Timestamp).Days<=10 && citizenQrCode.Timestamp<= citizenQr.Timestamp && citizenQr.Timestamp <= datePlusUneHeure
                                                                     && citizenQr.Citizen.Is_Positive==false
                                                                     select _mapper.Map<CitizenDto>(citizenQr.Citizen)).Distinct();
 

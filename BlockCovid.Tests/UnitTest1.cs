@@ -67,6 +67,52 @@ namespace BlockCovid.Tests
 
 
         }
-        
+
+        [Fact]
+        public async void getParticipant_Test_ok()
+        {
+            // Triple A 
+            // Arrange
+            Mock<IParticipantsRepository> mockRepo = new Mock<IParticipantsRepository>();
+            Mock<JWTSettings> mockJWT = new Mock<JWTSettings>();
+            Mock<IMapper> mockMapper = new Mock<IMapper>();
+
+
+            Participant participant = new Participant { ParticipantID = 1, Login = "test@test.com", Password = "12345", Participant_Type = Models.ParticipantType.Doctor };
+            mockRepo.Setup(m => m.GetParticipantByIdAsync(1)).Returns(Task.FromResult(participant));
+
+            ParticipantsController controller = new ParticipantsController(mockRepo.Object, mockMapper.Object, mockJWT.Object);
+
+            //ACT
+            ActionResult<ParticipantDto> result = await controller.GetParticipant(1);
+
+            //ASSERT
+            Assert.IsType<OkObjectResult>(result.Result);
+
+
+        }
+
+        [Fact]
+        public async void getParticipant_Test_NotFound()
+        {
+            // Triple A 
+            // Arrange
+            Mock<IParticipantsRepository> mockRepo = new Mock<IParticipantsRepository>();
+            Mock<JWTSettings> mockJWT = new Mock<JWTSettings>();
+            Mock<IMapper> mockMapper = new Mock<IMapper>();
+
+
+            ParticipantsController controller = new ParticipantsController(mockRepo.Object, mockMapper.Object, mockJWT.Object);
+
+            //ACT
+            ActionResult<ParticipantDto> result = await controller.GetParticipant(1);
+
+            //ASSERT
+            Assert.IsType<NotFoundResult>(result.Result);
+
+
+        }
+
+
     }
 }

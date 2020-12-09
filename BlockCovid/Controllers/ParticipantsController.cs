@@ -67,7 +67,7 @@ namespace BlockCovid.Controllers
             }
 
             var participantDto = _mapper.Map<ParticipantDto>(participant);
-            return participantDto;
+            return Ok(participantDto);
         }
 
         /// <summary>

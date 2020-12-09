@@ -100,7 +100,7 @@ namespace BlockCovid.Controllers
         /// <response code="200">Notif envoyée</response>
         /// <response code="400"> le QR code n'existe pas ou le citizen n'existe pas</response> 
         [HttpPost("scanQrCode")]
-        public async Task<IActionResult> scanQrCode(ScanQrCodeDto scanQrCodeDto)
+        public async Task<ActionResult<ScanQrCodeDto>> scanQrCode(ScanQrCodeDto scanQrCodeDto)
         {
           
            
@@ -117,11 +117,11 @@ namespace BlockCovid.Controllers
 
                  await _qrCodesRepository.ScanQrCode(scanQrCodeDto);
                 }
-            catch (DbException Exception)
+            catch (DbException)
             {
-                return BadRequest(new { message = "erreur interne" });
+                return BadRequest(new { message = "erreur lors du scan" });
             }
-            return  Ok(scanQrCodeDto); // TODO : à changer
+            return scanQrCodeDto;
         }
     }
 }

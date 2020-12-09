@@ -112,16 +112,13 @@ namespace BlockCovid.Dal.Repositories
         }
         private async Task InsertCitizenQrCode(ScanQrCodeDto scanQrCodeDto)
         {
-            CitizenQrCodeDto citizenQrCodeDtoToInsert = new CitizenQrCodeDto
+            CitizenQrCode citizen = new CitizenQrCode
             {
                 QrCodeId = scanQrCodeDto.QrCode,
                 Timestamp = DateTime.Now,
                 CitizenId = scanQrCodeDto.citizen,
-
-            };
-            CitizenQrCode citizenQrCode = _mapper.Map<CitizenQrCode>(citizenQrCodeDtoToInsert);
-
-            _context.CitizenQrCode.Add(citizenQrCode);
+            };          
+            _context.CitizenQrCode.Add(citizen);
             await _context.SaveChangesAsync();
         }
         private async Task DeleteQrCode(ScanQrCodeDto scanQrCodeDto)
@@ -138,15 +135,15 @@ namespace BlockCovid.Dal.Repositories
 
             HashSet < Citizen > ensembleCitizenDto= new HashSet<Citizen>(new ComparateurCitizens());
 
-            IQueryable<CitizenQrCodeDto> listCustomer = await Task.Run(() => from CitizenQrCode c in _context.CitizenQrCode
+            IQueryable<CitizenQrCode> listCustomer = await Task.Run(() => from CitizenQrCode c in _context.CitizenQrCode
                                                                              where c.CitizenId == id
-                                                                             select _mapper.Map<CitizenQrCodeDto>(c));
+                                                                             select c);
 
             await Task.Run(async () =>
                await listCustomer.ForEachAsync(action: citizenQrCode =>
                 {
                     
-                    int jourCompare = Math.Abs((DateTime.Now.Subtract(citizenQrCode.Timestamp).Days));
+                    int jourCompare = (DateTime.Now.Subtract(citizenQrCode.Timestamp).Days);
 
                     DateTime datePlusUneHeure = citizenQrCode.Timestamp.AddHours(1);
                     IQueryable<Citizen> listCitizenDtoToNotify = (from CitizenQrCode citizenQr in _context.CitizenQrCode.Include(ct => ct.Citizen)
@@ -170,9 +167,8 @@ namespace BlockCovid.Dal.Repositories
           
         }
 
-        public void NotifyFilters(string token)
+        private void NotifyFilters(string token)
         {
-            System.Diagnostics.Debug.WriteLine(token);
             try
             {
                 dynamic data = new
@@ -184,7 +180,7 @@ namespace BlockCovid.Dal.Repositories
                     {
                         title = "COVID-19",     // Notification title
                         body = "allez vous faire diagnostiquer, vous êtes peut-être contaminer. ",    // Notification body data
-                        link = "https://www.youtube.com/watch?v=z6-FWJteNLI"       // When click on notification user redirect to this link
+                        link = "https://fr.wikipedia.org/wiki/Catastrophe_nucl%C3%A9aire_de_Tchernobyl"       // When click on notification user redirect to this link
                     }
                 };
 
@@ -219,7 +215,7 @@ namespace BlockCovid.Dal.Repositories
                 dataStream.Close();
                 tResponse.Close();
             }
-            catch (Exception exc)
+            catch (Exception)
             {
                 throw new Exception("notify exception");
             }

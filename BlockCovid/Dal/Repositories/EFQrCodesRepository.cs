@@ -58,15 +58,15 @@ namespace BlockCovid.Dal.Repositories
           
             try
             {
-
+                    System.Diagnostics.Debug.WriteLine("Scan Qr Code");
                     QrCode qrCode = await _context.QrCode.Include(qr => qr.Participant).FirstOrDefaultAsync(x => x.QrCodeID == (scanQrCodeDto.QrCode));
                     
                     ParticipantType participantType = qrCode.Participant.Participant_Type;
-
+                    
                     switch (participantType)
                     {
                         case ParticipantType.Doctor:
-
+                            System.Diagnostics.Debug.WriteLine("Qr Code du doctor scanné");
                             await DeleteQrCode(scanQrCodeDto);
                             await UpdateToPositive(scanQrCodeDto);
                             await ToNotify(scanQrCodeDto.citizen);
@@ -74,7 +74,7 @@ namespace BlockCovid.Dal.Repositories
                             break;
 
                         case ParticipantType.Establishment:
-
+                            System.Diagnostics.Debug.WriteLine("Qr Code de l'etablisement scanné");
                             await InsertCitizenQrCode(scanQrCodeDto);
                             break;
 
@@ -94,9 +94,6 @@ namespace BlockCovid.Dal.Repositories
                 throw new Exception(exc.Message);
                
             }
-          
-            
-   
         }
 
         private async Task UpdateToPositive(ScanQrCodeDto scanQrCodeDto)
@@ -104,8 +101,7 @@ namespace BlockCovid.Dal.Repositories
    
             Citizen  citizen = (from Citizen c in _context.Citizens
                                 where c.CitizenID==scanQrCodeDto.citizen
-                                select c)
-                                .SingleOrDefault();
+                                select c).SingleOrDefault();
 
             citizen.Is_Positive = true;
             citizen.Is_Exposed = false;
@@ -143,30 +139,32 @@ namespace BlockCovid.Dal.Repositories
             await Task.Run(async () =>
                await listCustomer.ForEachAsync(action: citizenQrCode =>
                {
-                    
-                    int jourCompare = (DateTime.Now.Subtract(citizenQrCode.Timestamp).Days);
 
-                    DateTime datePlusUneHeure = citizenQrCode.Timestamp.AddHours(1);
-                    IQueryable<Citizen> listCitizenDtoToNotify = (from CitizenQrCode citizenQr in _context.CitizenQrCode.Include(ct => ct.Citizen)
+                   int jourCompare = (DateTime.Now.Subtract(citizenQrCode.Timestamp).Days);
 
-                                                                    where citizenQr.QrCodeId == citizenQrCode.QrCodeId
-                                                                    && (jourCompare <= 10) //permet de voir si ils se sont croisés il y a plus de 10 jours
-                                                                    && citizenQrCode.Timestamp<= citizenQr.Timestamp && citizenQr.Timestamp <= datePlusUneHeure
-                                                                    && citizenQr.Citizen.Is_Positive==false
-                                                                    select citizenQr.Citizen).Distinct();
+                   DateTime datePlusUneHeure = citizenQrCode.Timestamp.AddHours(1);
+                   IQueryable<Citizen> listCitizenDtoToNotify = (from CitizenQrCode citizenQr in _context.CitizenQrCode.Include(ct => ct.Citizen)
 
-                    foreach (Citizen citizen in listCitizenDtoToNotify)
-                    {
-                        if (!ensembleCitizen.Contains(citizen))
-                        {
-                            citizen.Is_Exposed = true;
-                            NotifyFilters(citizen.TokenFireBase);
-                            ensembleCitizen.Add(citizen);
-                        }
-                    }
+                                                                 where citizenQr.QrCodeId == citizenQrCode.QrCodeId
+                                                                 && (jourCompare <= 10) //permet de voir si ils se sont croisés il y a plus de 10 jours
+                                                                 && citizenQrCode.Timestamp <= citizenQr.Timestamp && citizenQr.Timestamp <= datePlusUneHeure
+                                                                 && citizenQr.Citizen.Is_Positive == false
+                                                                 select citizenQr.Citizen).Distinct();
 
-                    _context.SaveChangesAsync();
-               
+                   System.Diagnostics.Debug.WriteLine("Parcours la liste des citizens à notifier");
+                   System.Diagnostics.Debug.WriteLine(listCitizenDtoToNotify);
+                   foreach (Citizen citizen in listCitizenDtoToNotify)
+                   {
+                       System.Diagnostics.Debug.WriteLine("Parcours le citizen :" + citizen.CitizenID);
+                       if (!ensembleCitizen.Contains(citizen))
+                       {
+                           System.Diagnostics.Debug.WriteLine("Modification de citizen :" + citizen.CitizenID);
+                           citizen.Is_Exposed = true;
+                           NotifyFilters(citizen.TokenFireBase);
+                           ensembleCitizen.Add(citizen);
+                       }
+                   }
+
                }));
           
         }

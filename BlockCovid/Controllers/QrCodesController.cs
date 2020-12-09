@@ -117,9 +117,9 @@ namespace BlockCovid.Controllers
 
                  await _qrCodesRepository.ScanQrCode(scanQrCodeDto);
                 }
-            catch (DbException)
+            catch (DbException exc)
             {
-                return BadRequest(new { message = "erreur lors du scan" });
+                return BadRequest(new { message = "erreur lors du scan "+exc.Message });
             }
             return scanQrCodeDto;
         }

@@ -17,6 +17,7 @@ namespace BlockCovid.Models
         public string Last_Name { get; set; }
         public string TokenFireBase { get; set; }
         public bool Is_Positive { get; set; }
+        public bool Is_Exposed { get; set; }
         //Navigation property
         public virtual ICollection<CitizenQrCode> Citizen_QrCode { get; set; }
 

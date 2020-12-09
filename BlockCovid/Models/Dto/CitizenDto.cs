@@ -15,5 +15,6 @@ namespace BlockCovid.Models.Dto
         public string Last_Name { get; set; }
         public string TokenFireBase { get; set; }
         public bool Is_Positive { get; set; }
+        public bool Is_Exposed { get; set; }
     }
 }

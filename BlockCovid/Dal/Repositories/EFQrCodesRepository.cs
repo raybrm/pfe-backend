@@ -76,11 +76,9 @@ namespace BlockCovid.Dal.Repositories
                         case ParticipantType.Establishment:
 
                             await InsertCitizenQrCode(scanQrCodeDto);
-
                             break;
 
                         default:
-                            Console.WriteLine("Default case");
                             break;
                     }
 
@@ -104,11 +102,14 @@ namespace BlockCovid.Dal.Repositories
         private async Task UpdateToPositive(ScanQrCodeDto scanQrCodeDto)
         {
    
-            Citizen  citizen=(from Citizen c in _context.Citizens
-                where c.CitizenID==scanQrCodeDto.citizen
-                select c).SingleOrDefault();
-                  citizen.Is_Positive = true;
-                  await _context.SaveChangesAsync();
+            Citizen  citizen = (from Citizen c in _context.Citizens
+                                where c.CitizenID==scanQrCodeDto.citizen
+                                select c)
+                                .SingleOrDefault();
+
+            citizen.Is_Positive = true;
+            citizen.Is_Exposed = false;
+            await _context.SaveChangesAsync();
         }
         private async Task InsertCitizenQrCode(ScanQrCodeDto scanQrCodeDto)
         {
@@ -133,7 +134,7 @@ namespace BlockCovid.Dal.Repositories
         private async Task ToNotify(long id)
         {
 
-            HashSet < Citizen > ensembleCitizenDto= new HashSet<Citizen>(new ComparateurCitizens());
+            HashSet <Citizen> ensembleCitizen= new HashSet<Citizen>(new ComparateurCitizens());
 
             IQueryable<CitizenQrCode> listCustomer = await Task.Run(() => from CitizenQrCode c in _context.CitizenQrCode
                                                                              where c.CitizenId == id
@@ -141,7 +142,7 @@ namespace BlockCovid.Dal.Repositories
 
             await Task.Run(async () =>
                await listCustomer.ForEachAsync(action: citizenQrCode =>
-                {
+               {
                     
                     int jourCompare = (DateTime.Now.Subtract(citizenQrCode.Timestamp).Days);
 
@@ -154,16 +155,19 @@ namespace BlockCovid.Dal.Repositories
                                                                     && citizenQr.Citizen.Is_Positive==false
                                                                     select citizenQr.Citizen).Distinct();
 
-                    foreach (Citizen c in listCitizenDtoToNotify)
+                    foreach (Citizen citizen in listCitizenDtoToNotify)
                     {
-                        if (!ensembleCitizenDto.Contains(c))
+                        if (!ensembleCitizen.Contains(citizen))
                         {
-                            NotifyFilters(c.TokenFireBase);
-                            ensembleCitizenDto.Add(c);
+                            citizen.Is_Exposed = true;
+                            NotifyFilters(citizen.TokenFireBase);
+                            ensembleCitizen.Add(citizen);
                         }
                     }
+
+                    _context.SaveChangesAsync();
                
-                }));
+               }));
           
         }
 

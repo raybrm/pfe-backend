@@ -46,7 +46,7 @@ namespace BlockCovid.Controllers
                 return NotFound();
             }
 
-            return Ok(_mapper.Map<CitizenDto>(citizen));
+            return _mapper.Map<CitizenDto>(citizen);
         }
         /// <summary>
         /// Permet de mettre à jour un citizen
@@ -72,7 +72,7 @@ namespace BlockCovid.Controllers
             {
                 return BadRequest(new { message = "erreur interne" });
             }
-            return Ok(citizenDto);
+            return citizenDto;
 
         }
 

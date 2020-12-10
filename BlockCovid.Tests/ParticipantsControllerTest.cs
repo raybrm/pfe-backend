@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BlockCovid.Tests
 {
-    public class UnitTest1
+    public class ParticipantsControllerTest
     {
         [Fact]
         public async void Can_Use_Repository()
@@ -64,8 +64,6 @@ namespace BlockCovid.Tests
             //ASSERT
             Assert.IsType<BadRequestObjectResult>(result.Result);
 
-
-
         }
 
         [Fact]
@@ -109,8 +107,31 @@ namespace BlockCovid.Tests
 
             //ASSERT
             Assert.IsType<NotFoundResult>(result.Result);
+        }
 
+        [Fact]
+        public async void BadConfirmPassword()
+        {
+            // Triple A 
+            // Arrange
+            Mock<IParticipantsRepository> mockRepo = new Mock<IParticipantsRepository>();
+            Mock<JWTSettings> mockJWT = new Mock<JWTSettings>();
+            Mock<IMapper> mockMapper = new Mock<IMapper>();
+            ParticipantsController controller = new ParticipantsController(mockRepo.Object, mockMapper.Object, mockJWT.Object);
 
+            var model = new ParticipantDto
+            {
+                Login = "test@test.com",
+                Password = "12345",
+                ConfirmPassword = "12346",
+                Participant_Type = ParticipantType.Doctor
+            };
+
+            //ACT
+            var result = await controller.PostParticipant(model);
+
+            //ASSERT
+            Assert.IsType<StatusCodeResult>(result.Result);
         }
 
 

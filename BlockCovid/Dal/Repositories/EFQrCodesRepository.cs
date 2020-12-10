@@ -88,7 +88,6 @@ namespace BlockCovid.Dal.Repositories
 
                     await transaction.CommitAsync();
               
- 
             }
             catch (Exception exc)
             {
@@ -145,12 +144,14 @@ namespace BlockCovid.Dal.Repositories
                    int jourCompare = (DateTime.Now.Subtract(citizenQrCode.Timestamp).Days);
 
                    DateTime datePlusUneHeure = citizenQrCode.Timestamp.AddHours(1);
+                   DateTime dateMoinsUneHeure = citizenQrCode.Timestamp.AddHours(-1);
                    IQueryable<Citizen> listCitizenDtoToNotify = (from CitizenQrCode citizenQr in _context.CitizenQrCode.Include(ct => ct.Citizen)
 
                                                                  where citizenQr.QrCodeId == citizenQrCode.QrCodeId
                                                                  && (jourCompare <= 10) //permet de voir si ils se sont croisés il y a plus de 10 jours
-                                                                 && citizenQrCode.Timestamp <= citizenQr.Timestamp && citizenQr.Timestamp <= datePlusUneHeure
+                                                                 && citizenQr.Timestamp <= datePlusUneHeure
                                                                  && citizenQr.Citizen.Is_Positive == false
+                                                                 && citizenQr.Timestamp>= dateMoinsUneHeure
                                                                  select citizenQr.Citizen).Distinct();
 
                    System.Diagnostics.Debug.WriteLine("Parcours la liste des citizens à notifier");

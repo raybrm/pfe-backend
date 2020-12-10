@@ -20,12 +20,12 @@ namespace BlockCovid.Controllers
     public class CitizensController : ControllerBase
     {
         private readonly ICitizensRepository _citizen;
-        private readonly IMapper _mapper;
-        public CitizensController(ICitizensRepository citizen, IMapper mapper)
+     
+        public CitizensController(ICitizensRepository citizen)
         {
             
             _citizen = citizen;
-            _mapper = mapper;
+            
         }
 
 
@@ -46,7 +46,7 @@ namespace BlockCovid.Controllers
                 return NotFound();
             }
 
-            return _mapper.Map<CitizenDto>(citizen);
+            return citizen;
         }
         /// <summary>
         /// Permet de mettre à jour un citizen
@@ -90,8 +90,6 @@ namespace BlockCovid.Controllers
             {
                 return NotFound();
             }
-
-            
             try
             {
                 cDto = await _citizen.UpdateCitizenToken(citizenDto);
@@ -111,27 +109,17 @@ namespace BlockCovid.Controllers
         /// <response code="201">Returns the newly created citizen </response>
         /// <response code="400">Si citizen est null</response>  
         [HttpPost("register")]
-        public async Task<ActionResult<CitizenDto>> RegisterCitizen(CitizenDto citizenDto)
+        public async Task<ActionResult<CitizenDto>> RegisterCitizen(CitizenRegisterDto citizenDto)
         {
-            CitizenDto cDto = await _citizen.IfCitizenInDbAsync(citizenDto);
-            if (cDto == null)
-            {
-                var citizen = _mapper.Map<Citizen>(citizenDto);
-
                 try
                 {
-                    var citizenToReturn = await _citizen.CreateCitizensAsync(citizen);
-                    return CreatedAtAction("GetCitizen", new { id = citizen.CitizenID }, _mapper.Map<CitizenDto>(citizenToReturn));
+                    return await _citizen.CreateCitizensAsync(citizenDto);
                 }
                 catch (DbUpdateException)
                 {
                     return Conflict(new { message = "The citizen already exist" });
                 }
-               
-               
-            }
-
-            return cDto;
+ 
 
         }
 

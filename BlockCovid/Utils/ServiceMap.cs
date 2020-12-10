@@ -13,9 +13,15 @@ namespace BlockCovid.Utils
         public ServiceMap()
         {
             CreateMap<Participant, ParticipantDto>();
+            CreateMap<Participant, ParticipantConnexionDto>();
+
             CreateMap<Citizen, CitizenDto>();
             CreateMap<CitizenDto, Citizen>();
-            CreateMap<Participant, ParticipantConnexionDto>();
+
+            CreateMap<Citizen, CitizenRegisterDto>();
+            CreateMap<CitizenRegisterDto, Citizen>();
+
+           
             CreateMap<QrCode, QrCodeDto>();
             CreateMap<QrCodeDto, QrCode>();
         }

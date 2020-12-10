@@ -27,15 +27,13 @@ namespace BlockCovid.Controllers
     public class ParticipantsController : ControllerBase
     {
     
-        private readonly IParticipantsRepository _participant;
-        private readonly IMapper _mapper;
+        private readonly IParticipantsRepository _participant;     
         private readonly JWTSettings _jwtSettings;
 
 
-        public ParticipantsController(IParticipantsRepository participant, IMapper mapper, JWTSettings jwtSettings)
+        public ParticipantsController(IParticipantsRepository participant,  JWTSettings jwtSettings)
         {
             _participant = participant;
-            _mapper = mapper;
             _jwtSettings = jwtSettings;
         }
 
@@ -50,25 +48,6 @@ namespace BlockCovid.Controllers
             return await _participant.GetParticipantsAsync();
         }
 
-        /// <summary>
-        /// Recup un participant en donnant un id
-        /// </summary>
-        /// <response code="200">Retourne le participant </response>
-        /// <response code="404">Si le participant n'existe pas</response>  
-        // GET: api/Participants/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<ParticipantDto>> GetParticipant(long id)
-        {
-            var participant = await _participant.GetParticipantByIdAsync(id);
-
-            if (participant == null)
-            {
-                return NotFound();
-            }
-
-            var participantDto = _mapper.Map<ParticipantDto>(participant);
-            return Ok(participantDto);
-        }
 
         /// <summary>
         /// Permet d'enregistrer un participant
@@ -92,8 +71,6 @@ namespace BlockCovid.Controllers
             }
 
             string passwordHash = BCrypt.Net.BCrypt.HashPassword(participantDTO.Password);
-
-            //TODO: Participant participant = _mapper.Map<Participant>(participantDTO);
             
             var participant = new Participant
             {
@@ -111,10 +88,8 @@ namespace BlockCovid.Controllers
                 return Conflict(new { message = "The login already exist" });
             }
 
-
             var tokenJWT = GenerateJWToken(participant);
 
-            //return CreatedAtAction("GetParticipant", new { id = participant.ParticipantID }, _mapper.Map<ParticipantDto>(participant));
             return Ok(new JwtSecurityTokenHandler().WriteToken(tokenJWT));
 
         }

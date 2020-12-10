@@ -28,9 +28,11 @@ namespace BlockCovid.Dal.Repositories
             _fireBaseSettings = fireBaseSettings;
             _mapper = mapper;
         }
-        public async Task<QrCode> CreateQrCodeAsync(QrCode qrCode)
+        public async Task<QrCodeDto> CreateQrCodeAsync(QrCodeDto qrCode,long participantID)
         {
-            _context.QrCode.Add(qrCode);
+            QrCode qrCodeParticipant = _mapper.Map<QrCode>(qrCode);
+            qrCodeParticipant.ParticipantID = participantID;
+            _context.QrCode.Add(qrCodeParticipant);
             await _context.SaveChangesAsync();
             return qrCode;
         }

@@ -28,6 +28,7 @@ namespace BlockCovid.Dal.Repositories
 
         public async Task<Participant> GetParticipantByIdAsync(long id)
         {
+            var participant = await _context.Participants.FindAsync(id);
             return await _context.Participants.FindAsync(id);
         }
 

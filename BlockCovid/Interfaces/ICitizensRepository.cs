@@ -10,8 +10,8 @@ namespace BlockCovid.Interfaces
 {
     public interface ICitizensRepository
     {
-        Task<Citizen> GetCitizenByIdAsync(long id);
-        Task<Citizen> CreateCitizensAsync(Citizen citizen);
+        Task<CitizenDto> GetCitizenByIdAsync(long id);
+        Task<CitizenDto> CreateCitizensAsync(CitizenRegisterDto citizen);
         Task<CitizenDto> IfCitizenInDbAsync(CitizenDto citizenDto);
         Task<CitizenDto> UpdateCitizen(CitizenDto citizenDto);
         Task<CitizenDto> UpdateCitizenToken(CitizenDto citizenDto);

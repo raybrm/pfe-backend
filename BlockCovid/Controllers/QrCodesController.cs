@@ -80,18 +80,17 @@ namespace BlockCovid.Controllers
                 return BadRequest(new { message = "No participant" });
             }
 
-            QrCode qrCode = _mapper.Map<QrCode>(qrCodeDto);
-            qrCode.ParticipantID = participant.ParticipantID;
-
+          
+           
             try
             {
-                await _qrCodesRepository.CreateQrCodeAsync(qrCode);
+                await _qrCodesRepository.CreateQrCodeAsync(qrCodeDto, participant.ParticipantID);
             } catch(DbUpdateException)
             {
                 return BadRequest(new {message = "The id already exist" });
             }
 
-            return CreatedAtAction("GetQrCode", new { id = qrCode.QrCodeID }, qrCodeDto);
+            return CreatedAtAction("GetQrCode", qrCodeDto);
         }
 
         /// <summary>

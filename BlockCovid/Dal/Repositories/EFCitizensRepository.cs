@@ -28,17 +28,20 @@ namespace BlockCovid.Dal.Repositories
             _mapper = mapper;
         }
 
-        public async Task<Citizen> GetCitizenByIdAsync(long id)
+        public async Task<CitizenDto> GetCitizenByIdAsync(long id)
         {
-            return await _context.Citizens.FindAsync(id);
-        }
+            var citizen = await _context.Citizens.FindAsync(id);
 
-        public async Task<Citizen> CreateCitizensAsync(Citizen citizen)
+            return _mapper.Map<CitizenDto>(citizen);
+        }
+        
+
+        public async Task<CitizenDto> CreateCitizensAsync(CitizenRegisterDto citizenDto)
         {
            
-            _context.Citizens.Add(citizen);
+            var citizen = _context.Citizens.Add(_mapper.Map<Citizen>(citizenDto));
             await _context.SaveChangesAsync();
-            return citizen;
+            return _mapper.Map<CitizenDto>(citizen.Entity);
         }
 
 
